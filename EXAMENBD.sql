@@ -25,7 +25,27 @@ CREATE TABLE CONVOCATORIA_EXAMEN
 (CONVOCATORIA VARCHAR(40),
 DESCRIPCION VARCHAR(100),
 FECHA DATE,
-CURSO VARCHAR(100));
+CURSO VARCHAR(100),
+FOREIGN KEY (ID_ENUNCIADO) REFERENCES ENUNCIADO (ID_ENUNCIADO));
+
+INSERT INTO UNIDAD_DIDACTICA (ID_UNIDAD, ACRONIMO, TITULO, EVALUACION, DESCRIPCION) VALUES
+(1, 'MATH', 'Matemáticas Básicas', 'Examen Final', 'Unidad básica de matemáticas'),
+(2, 'PHY', 'Física I', 'Prueba Parcial', 'Introducción a la física');
+
+-- Insert en ENUNCIADO
+INSERT INTO ENUNCIADO (ID_ENUNCIADO, DESCRIPCION, NIVEL, DISPONIBLE, RUTA) VALUES
+(1, 'Problema de álgebra lineal', 'ALTA', TRUE, '/ruta/algebra1.pdf'),
+(2, 'Ejercicio de cinemática', 'MEDIA', TRUE, '/ruta/cinematica1.pdf');
+
+-- Insert en ASIGNAR
+INSERT INTO ASIGNAR (ID_UNIDAD, ID_ENUNCIADO) VALUES
+(1, 1),
+(2, 2);
+
+-- Insert en CONVOCATORIA_EXAMEN
+INSERT INTO CONVOCATORIA_EXAMEN (CONVOCATORIA, DESCRIPCION, FECHA, CURSO, ID_ENUNCIADO) VALUES
+('Convocatoria 2025-09', 'Examen de septiembre 2025', '2025-09-30', 'Curso 1', 1),
+('Convocatoria 2025-10', 'Examen de octubre 2025', '2025-10-15', 'Curso 2', 2);
 
 
 
