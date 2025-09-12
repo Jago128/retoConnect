@@ -10,9 +10,5 @@ package modelo;
  * @author 2dami
  */
 public enum Dificultad {
-<<<<<<< Updated upstream
     ALTA, MEDIA, BAJA
-=======
-    FACIL, INTERMEDIO, DIFICIL
->>>>>>> Stashed changes
 }
