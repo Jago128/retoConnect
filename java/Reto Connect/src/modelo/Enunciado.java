@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modelo;
 
-/**
- *
- * @author 2dami
- */
 public class Enunciado {
     private int id;
     private String descripcion;
@@ -67,7 +58,7 @@ public class Enunciado {
         this.ruta = ruta;
     }
 
-    // toString en una sola línea
+    // toString
     @Override
     public String toString() {
         return "Enunciado{id=" + id + ", descripcion='" + descripcion + "', dificultad=" + dificultad + ", disponible=" + disponible + ", ruta='" + ruta + "'}";
