@@ -10,7 +10,6 @@ package reto.connect;
  * @author Mosi
  */
 public class RetoConnect {
-
     /**
      * @param args the command line arguments
      */
