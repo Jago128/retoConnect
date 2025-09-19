@@ -16,6 +16,7 @@ public class Enunciado {
         this.ruta = ruta;
     }
     
+<<<<<<< Updated upstream
     public Enunciado() {
         this.id = 0;
         this.descripcion = "";
@@ -24,10 +25,12 @@ public class Enunciado {
         this.ruta = "";
     }
 
+=======
+>>>>>>> Stashed changes
     public Enunciado() {
         this.id = 0;
         this.descripcion = "";
-        this.dificultad = Dificultad.BAJA;
+        this.dificultad = null;
         this.disponible = false;
         this.ruta = "";
     }

@@ -14,7 +14,11 @@ import java.util.Map;
 public interface InterfazDAO {
 <<<<<<< HEAD
     public Map<Integer, Enunciado> mostrarEnunciados();
+<<<<<<< Updated upstream
 =======
     public  Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
 >>>>>>> ramaKevin
+=======
+    public  Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
+>>>>>>> Stashed changes
 }

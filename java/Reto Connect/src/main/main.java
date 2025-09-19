@@ -55,6 +55,22 @@ public class main {
         return enunciados;
 >>>>>>> ramaKevin
     }
+    
+    public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(ImplementacionBD im) {
+        int sesionElegida;
+        System.out.println("Sobre que sesion quieres buscar el enunciado?");
+        sesionElegida = Utilidades.leerInt();
+
+        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+        
+        enunciados = im.getEnunciadosSesion(sesionElegida);
+        for (Enunciado enunciado : enunciados.values()) {
+            System.out.println(enunciado);
+
+        }
+
+        return enunciados;
+    }
 
     public static void main(String[] args) {
         LoginController cont = new LoginController();
@@ -91,6 +107,6 @@ public class main {
                     System.out.println("Adios");
                     break;
             }
-        } while (opcion != 8);
+        } while (opcion != 7);
     }
 }

@@ -13,11 +13,15 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
+<<<<<<< Updated upstream
 <<<<<<< HEAD
 public class ImplementacionBD implements InterfazDAO{
 =======
 public class ImplementacionBD implements InterfazDAO {
 >>>>>>> ramaKevin
+=======
+public class ImplementacionBD implements InterfazDAO {
+>>>>>>> Stashed changes
 
     // Atributos
     private Connection con;
@@ -35,11 +39,16 @@ public class ImplementacionBD implements InterfazDAO {
 <<<<<<< HEAD
     final String SQLGETMODELS = "INSERT INTO UNIDAD_DIDACTICA VALUES ( ?,?,?,?)";
     final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
+<<<<<<< Updated upstream
     
 =======
     final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
 
 >>>>>>> ramaKevin
+=======
+    final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
+
+>>>>>>> Stashed changes
     // Para la conexi n utilizamos un fichero de configuaraci n, config que
     // guardamos en el paquete control:
     public ImplementacionBD() {
