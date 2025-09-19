@@ -2,6 +2,10 @@ package main;
 
 import controller.LoginController;
 import java.util.HashMap;
+<<<<<<< HEAD
+=======
+import java.util.Map;
+>>>>>>> ramaKevin
 import modelo.Enunciado;
 import modelo.ImplementacionBD;
 import utilidades.Utilidades;
@@ -16,6 +20,7 @@ public class main {
                 + "Introduce una opcion: ", 1, 7);
     }
 
+<<<<<<< HEAD
     public static void mostrarDocumEnun(ImplementacionBD im) {
         HashMap<Integer, Enunciado> enuns = new HashMap<>();
         enuns = im.mostrarEnunciados();
@@ -33,16 +38,36 @@ public class main {
         }while(!enuns.containsKey(idEnun));
         
         System.out.println(enuns.get(idEnun).toString());
+=======
+    public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(ImplementacionBD im) {
+        int sesionElegida;
+        System.out.println("Sobre que sesion quieres buscar el enunciado?");
+        sesionElegida = Utilidades.leerInt();
+
+        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+        
+        enunciados = im.getEnunciadosSesion(sesionElegida);
+        for (Enunciado enunciado : enunciados.values()) {
+            System.out.println(enunciado);
+
+        }
+
+        return enunciados;
+>>>>>>> ramaKevin
     }
 
     public static void main(String[] args) {
         LoginController cont = new LoginController();
         // TODO Auto-generated method stub
         int opcion;
+        
         do {
             opcion = mostrarMenu();
             ImplementacionBD im = new ImplementacionBD();
+<<<<<<< HEAD
 
+=======
+>>>>>>> ramaKevin
             switch (opcion) {
                 case 1:
 
@@ -51,7 +76,7 @@ public class main {
 
                     break;
                 case 3:
-
+                    mostrarEnunciadosSesion(im);
                     break;
                 case 4:
 

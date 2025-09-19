@@ -15,6 +15,14 @@ public class Enunciado {
         this.disponible = disponible;
         this.ruta = ruta;
     }
+    
+    public Enunciado() {
+        this.id = 0;
+        this.descripcion = "";
+        this.dificultad = null;
+        this.disponible = false;
+        this.ruta = "";
+    }
 
     public Enunciado() {
         this.id = 0;

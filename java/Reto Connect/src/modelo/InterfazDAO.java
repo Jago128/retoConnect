@@ -12,5 +12,9 @@ import java.util.Map;
  * @author 2dami
  */
 public interface InterfazDAO {
+<<<<<<< HEAD
     public Map<Integer, Enunciado> mostrarEnunciados();
+=======
+    public  Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
+>>>>>>> ramaKevin
 }
