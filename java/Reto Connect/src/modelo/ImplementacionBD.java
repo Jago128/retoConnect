@@ -3,10 +3,12 @@ package modelo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
-public class ImplementacionBD {
+public class ImplementacionBD implements InterfazDAO{
 
     // Atributos
     private Connection con;
@@ -22,11 +24,12 @@ public class ImplementacionBD {
 
     // dej
     final String SQLGETMODELS = "INSERT INTO UNIDAD_DIDACTICA VALUES ( ?,?,?,?)";
-
+    final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
+    
     // Para la conexi n utilizamos un fichero de configuaraci n, config que
     // guardamos en el paquete control:
     public ImplementacionBD() {
-        this.configFile = ResourceBundle.getBundle("modelo.configClase");
+        this.configFile = ResourceBundle.getBundle("configClase");
         this.driverBD = this.configFile.getString("Driver");
         this.urlBD = this.configFile.getString("Conn");
         this.userBD = this.configFile.getString("DBUser");
@@ -42,6 +45,36 @@ public class ImplementacionBD {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public HashMap<Integer, Enunciado> mostrarEnunciados() {
+        ResultSet rs;
+        HashMap<Integer, Enunciado> enunciados=new HashMap<>();
+        
+        openConnection();
+        
+        try{
+            stmt = con.prepareStatement(SQL_MOSTRAR_ENUNCIADOS);
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                Enunciado enun=new Enunciado();
+                enun.setId(rs.getInt("id_enunciado"));
+                enun.setDescripcion(rs.getString("descripcion"));
+                enun.setDificultad(Dificultad.valueOf(rs.getString("nivel")));
+                enun.setDisponible(rs.getBoolean("disponible"));
+                enun.setRuta(rs.getString("ruta"));
+                enunciados.put(enun.getId(), enun);
+            }
+            
+            rs.close();
+            stmt.close();
+            con.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        
+        return enunciados;
     }
 
 }

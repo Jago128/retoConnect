@@ -44,3 +44,5 @@ nbdist/
 .classpath
 .project
 .settings/
+
+retoConnect/src/configClase.properties
