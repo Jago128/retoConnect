@@ -15,18 +15,7 @@ public class Enunciado {
         this.disponible = disponible;
         this.ruta = ruta;
     }
-    
-<<<<<<< Updated upstream
-    public Enunciado() {
-        this.id = 0;
-        this.descripcion = "";
-        this.dificultad = null;
-        this.disponible = false;
-        this.ruta = "";
-    }
 
-=======
->>>>>>> Stashed changes
     public Enunciado() {
         this.id = 0;
         this.descripcion = "";
