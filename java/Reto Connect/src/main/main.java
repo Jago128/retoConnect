@@ -1,24 +1,46 @@
 package main;
 
 import controller.LoginController;
+import java.util.HashMap;
+import java.util.Map;
+import modelo.Enunciado;
+import modelo.ImplementacionBD;
+import utilidades.Utilidades;
 
 public class main {
 
     public static int mostrarMenu() {
 
-        return utilidades.Utilidades.leerInt("1. Introducir Unidad Didactica y Convocatoria examen \n"
+        return Utilidades.leerInt("1. Introducir Unidad Didactica y Convocatoria examen \n"
                 + "2. Crear Enunciado  añadiendo unidades didacticas\n3. Mostrar Enunciado de una unidad expecifica \n"
                 + "4. Consultar en que sesion se ha utilizado un enunciado \n5. Ver documento asociado ha un enunciado \n6. Asignar un enunciado ha una sesion \n7. Salir\n"
                 + "Introduce una opcion: ", 1, 7);
+    }
+
+    public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(ImplementacionBD im) {
+        int sesionElegida;
+        System.out.println("Sobre que sesion quieres buscar el enunciado?");
+        sesionElegida = Utilidades.leerInt();
+
+        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+        
+        enunciados = im.getEnunciadosSesion(sesionElegida);
+        for (Enunciado enunciado : enunciados.values()) {
+            System.out.println(enunciado);
+
+        }
+
+        return enunciados;
     }
 
     public static void main(String[] args) {
         LoginController cont = new LoginController();
         // TODO Auto-generated method stub
         int opcion;
+        
         do {
             opcion = mostrarMenu();
-
+            ImplementacionBD im = new ImplementacionBD();
             switch (opcion) {
                 case 1:
 
@@ -27,7 +49,7 @@ public class main {
 
                     break;
                 case 3:
-
+                    mostrarEnunciadosSesion(im);
                     break;
                 case 4:
 

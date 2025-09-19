@@ -3,10 +3,14 @@ package modelo;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
-public class ImplementacionBD {
+public class ImplementacionBD implements InterfazDAO {
 
     // Atributos
     private Connection con;
@@ -21,12 +25,12 @@ public class ImplementacionBD {
     private String passwordBD;
 
     // dej
-    final String SQLGETMODELS = "INSERT INTO UNIDAD_DIDACTICA VALUES ( ?,?,?,?)";
+    final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
 
     // Para la conexi n utilizamos un fichero de configuaraci n, config que
     // guardamos en el paquete control:
     public ImplementacionBD() {
-        this.configFile = ResourceBundle.getBundle("modelo.configClase");
+        this.configFile = ResourceBundle.getBundle("configClase");
         this.driverBD = this.configFile.getString("Driver");
         this.urlBD = this.configFile.getString("Conn");
         this.userBD = this.configFile.getString("DBUser");
@@ -44,4 +48,43 @@ public class ImplementacionBD {
         }
     }
 
+
+    public HashMap<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
+        ResultSet rs = null;
+		Enunciado enunciado;
+		HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+
+		this.openConnection();
+
+		try {
+                        
+			stmt = con.prepareStatement(SQLENUNCIADO);
+                        stmt.setInt(1, sesionElegida);
+			rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				enunciado = new Enunciado();
+				enunciado.setDescripcion(rs.getString("descripcion"));
+				String dificultadStr = rs.getString("nivel");
+                                if (dificultadStr != null) 
+                                {
+                                    Dificultad dificultad = Dificultad.valueOf(dificultadStr.toUpperCase());
+                                    enunciado.setDificultad(dificultad);
+                                }
+				enunciado.setDisponible(rs.getBoolean("disponible"));
+				enunciado.setRuta(rs.getString("ruta"));
+                                
+				enunciados.put(enunciado.getId(), enunciado);
+			}
+
+			rs.close();
+			stmt.close();
+			con.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		return enunciados;
+    }
 }
