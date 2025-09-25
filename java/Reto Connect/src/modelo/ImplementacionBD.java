@@ -6,7 +6,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.TreeMap;
 
@@ -25,6 +24,8 @@ public class ImplementacionBD implements InterfazDAO {
     private String passwordBD;
 
     // dej
+    final String SQLGETMODELS = "INSERT INTO UNIDAD_DIDACTICA VALUES ( ?,?,?,?)";
+    final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
     final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
 
     // Para la conexi n utilizamos un fichero de configuaraci n, config que
@@ -46,6 +47,36 @@ public class ImplementacionBD implements InterfazDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    public HashMap<Integer, Enunciado> mostrarEnunciados() {
+        ResultSet rs;
+        HashMap<Integer, Enunciado> enunciados=new HashMap<>();
+        
+        openConnection();
+        
+        try{
+            stmt = con.prepareStatement(SQL_MOSTRAR_ENUNCIADOS);
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                Enunciado enun=new Enunciado();
+                enun.setId(rs.getInt("id_enunciado"));
+                enun.setDescripcion(rs.getString("descripcion"));
+                enun.setDificultad(Dificultad.valueOf(rs.getString("nivel")));
+                enun.setDisponible(rs.getBoolean("disponible"));
+                enun.setRuta(rs.getString("ruta"));
+                enunciados.put(enun.getId(), enun);
+            }
+            
+            rs.close();
+            stmt.close();
+            con.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        
+        return enunciados;
     }
 
 
