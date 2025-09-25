@@ -14,4 +14,5 @@ import java.util.Map;
 public interface InterfazDAO {
     public Map<Integer, Enunciado> mostrarEnunciados();
     public  Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
+    public Map<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado);
 }

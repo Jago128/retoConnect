@@ -27,6 +27,9 @@ public class ImplementacionBD implements InterfazDAO {
     final String SQLGETMODELS = "INSERT INTO UNIDAD_DIDACTICA VALUES ( ?,?,?,?)";
     final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
     final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
+    final String SQLMOSTRARSESIONES = "SELECT * FROM CONVOCATORIA_EXAMEN C JOIN ENUNCIADO E ON C.ID_ENUNCIADO=E.ID_ENUNCIADO WHERE E.ID_ENUNCIADO = ?";
+
+
 
     // Para la conexi n utilizamos un fichero de configuaraci n, config que
     // guardamos en el paquete control:
@@ -117,5 +120,37 @@ public class ImplementacionBD implements InterfazDAO {
 
 		}
 		return enunciados;
+    }
+    
+    @Override
+    public HashMap<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado) {
+        ConvocatoriaExamen ce = null;
+        ResultSet rs = null;
+        HashMap<Integer, ConvocatoriaExamen> est = new HashMap<>();
+
+        this.openConnection();
+
+        try {
+            stmt = con.prepareStatement(SQLMOSTRARSESIONES);
+            stmt.setInt(1, idEnunciado);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                ce = new ConvocatoriaExamen();
+                ce.setId(rs.getInt("ID_CONVOCATORIA_EXAMEN"));
+                ce.setConvocatoria(rs.getString("CONVOCATORIA"));
+                ce.setCurso(rs.getString("CURSO"));
+                ce.setFecha(rs.getDate("FECHA").toLocalDate());
+                ce.setDescripcion(rs.getString("DESCRIPCION"));
+                
+                
+                est.put(ce.getId(), ce);
+            }
+            rs.close();
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("Error de SQL.");
+        }
+        return est;
     }
 }

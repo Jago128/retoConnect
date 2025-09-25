@@ -3,6 +3,7 @@ package modelo;
 import java.time.LocalDate;
 
 public class ConvocatoriaExamen {
+    private int id;
     private String convocatoria;
     private String descripcion;
     private LocalDate fecha;
@@ -10,17 +11,28 @@ public class ConvocatoriaExamen {
     
     
     public ConvocatoriaExamen(){
+        this.id=0;
         this.convocatoria="";
         this.descripcion="";
         this.fecha= LocalDate.now();
         this.curso="";
     }
-        public ConvocatoriaExamen(String convocatoria, String descripcion, LocalDate fecha, String curso){
+        public ConvocatoriaExamen(int id, String convocatoria, String descripcion, LocalDate fecha, String curso){
+        this.id=id;
         this.convocatoria=convocatoria;
         this.descripcion=descripcion;
         this.fecha= fecha;
         this.curso=curso;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+        
     public String getConvocatoria(){
         return convocatoria;
     }

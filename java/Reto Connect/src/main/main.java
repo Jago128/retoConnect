@@ -2,6 +2,7 @@ package main;
 
 import controller.LoginController;
 import java.util.HashMap;
+import modelo.ConvocatoriaExamen;
 import modelo.Enunciado;
 import modelo.ImplementacionBD;
 import utilidades.Utilidades;
@@ -50,6 +51,21 @@ public class main {
 
         return enunciados;
     }
+    
+    public static void mostrarConvocatorias(ImplementacionBD im) {
+        int id = 0;
+        HashMap<Integer, ConvocatoriaExamen> mapaConvocatoria = new HashMap<>();
+        System.out.println("Introduzca el id del Enunciado:");
+        id = utilidades.Utilidades.leerInt();
+        mapaConvocatoria = im.mostrarConvocatorias(id);
+        if (mapaConvocatoria.isEmpty()) {
+            System.out.println("EL enunciado introducido no existe");
+        } else {
+            for (ConvocatoriaExamen convocatoria : mapaConvocatoria.values()) {
+                System.out.println(convocatoria);
+            }
+        }
+    }
 
     public static void main(String[] args) {
         LoginController cont = new LoginController();
@@ -71,7 +87,7 @@ public class main {
                     mostrarEnunciadosSesion(im);
                     break;
                 case 4:
-
+                    mostrarConvocatorias(im);
                     break;
                 case 5:
                     mostrarDocumEnun(im);
