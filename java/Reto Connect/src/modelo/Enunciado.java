@@ -23,6 +23,14 @@ public class Enunciado {
         this.disponible = false;
         this.ruta = "";
     }
+    
+    //Constructo para cuando insertas un enunciado sin id, porque es autoincrement en SQL
+     public Enunciado(String descripcion, Dificultad dificultad, boolean disponible, String ruta) {
+        this.descripcion = descripcion;
+        this.dificultad = dificultad;
+        this.disponible = disponible;
+        this.ruta = ruta;
+    }
 
     // Getters
     public int getId() {
