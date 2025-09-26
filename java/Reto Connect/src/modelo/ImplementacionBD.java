@@ -15,7 +15,7 @@ public class ImplementacionBD implements InterfazDAO {
     private String userBD;
     private String passwordBD;
 
-    final String SQLGETMODELS = "INSERT INTO UNIDAD_DIDACTICA VALUES ( ?,?,?,?)";
+
     final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
     final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
     final String SQLMOSTRARSESIONES = "SELECT * FROM CONVOCATORIA_EXAMEN C JOIN ENUNCIADO E ON C.ID_ENUNCIADO=E.ID_ENUNCIADO WHERE E.ID_ENUNCIADO = ?";
@@ -24,6 +24,7 @@ public class ImplementacionBD implements InterfazDAO {
     final String SQLADDENUN = "INSERT INTO ENUNCIADO (DESCRIPCION, NIVEL, DISPONIBLE, RUTA) VALUES (?,?,?,?)";
     final String SQLSEARCHENUNS = "SELECT * FROM ENUNCIADO";
     final String SQLSEARCHENUNID = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO=?";
+    final String SQLCREARENUNCIADO = "INSERT INTO ENUNCIADO VALUES (?, ? ,?, ?, ?)";
 
     public ImplementacionBD() {
         this.configFile = ResourceBundle.getBundle("configClase");
@@ -249,4 +250,30 @@ public class ImplementacionBD implements InterfazDAO {
         }
         return register;
     }
+    
+    //Insertar un enunciado
+	public boolean crearEnunciado(Enunciado enunciado) {
+
+		boolean ok = false;
+		this.openConnection();
+		try {
+			// Preparamos la sentencia stmt con la conexion y sentencia sql correspondiente
+			stmt = con.prepareStatement(SQLCREARENUNCIADO);
+			stmt.setString(1, enunciado.getDescripcion());
+			stmt.setString(2, enunciado.getDificultad().toString()); //castear a string para introducirlo en la base de datos
+			stmt.setBoolean(3, enunciado.isDisponible());
+			stmt.setString(4, enunciado.getRuta());
+
+			if (stmt.executeUpdate() > 0) {
+				ok = true;
+			}
+
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error al verificar credenciales: " + e.getMessage());
+		}
+		return ok;
+
+	}
 }

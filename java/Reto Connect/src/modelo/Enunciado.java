@@ -68,5 +68,4 @@ public class Enunciado {
     public String toString() {
         return "Enunciado{id=" + id + ", descripcion='" + descripcion + "', dificultad=" + dificultad + ", disponible=" + disponible + ", ruta='" + ruta + "'}";
     }
-
 }
