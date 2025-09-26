@@ -45,6 +45,8 @@ public class ImplementacionBD implements InterfazDAO {
         }
     }
     
+    
+    
     public HashMap<Integer, Enunciado> mostrarEnunciados() {
         ResultSet rs;
         HashMap<Integer, Enunciado> enunciados=new HashMap<>();
