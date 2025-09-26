@@ -30,6 +30,7 @@ public class ImplementacionBD implements InterfazDAO {
     final String SQLMOSTRARSESIONES = "SELECT * FROM CONVOCATORIA_EXAMEN C JOIN ENUNCIADO E ON C.ID_ENUNCIADO=E.ID_ENUNCIADO WHERE E.ID_ENUNCIADO = ?";
     final String SQLCREARENUNCIADO = "INSERT INTO ENUNCIADO VALUES (?, ? ,?, ?, ?)";
 
+    final String MODCONVOCATORIA = "UPDATE CONVOCATORIA_EXAMEN SET ID_ENUNCIADO = ?, WHERE ID_CONVOCATORIA_EXAMEN = ?";
 
     // Para la conexi n utilizamos un fichero de configuaraci n, config que
     // guardamos en el paquete control:
@@ -51,19 +52,19 @@ public class ImplementacionBD implements InterfazDAO {
             e.printStackTrace();
         }
     }
-    
+
     public HashMap<Integer, Enunciado> mostrarEnunciados() {
         ResultSet rs;
-        HashMap<Integer, Enunciado> enunciados=new HashMap<>();
-        
+        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+
         openConnection();
-        
-        try{
+
+        try {
             stmt = con.prepareStatement(SQL_MOSTRAR_ENUNCIADOS);
             rs = stmt.executeQuery();
-            
-            while(rs.next()){
-                Enunciado enun=new Enunciado();
+
+            while (rs.next()) {
+                Enunciado enun = new Enunciado();
                 enun.setId(rs.getInt("id_enunciado"));
                 enun.setDescripcion(rs.getString("descripcion"));
                 enun.setDificultad(Dificultad.valueOf(rs.getString("nivel")));
@@ -71,57 +72,55 @@ public class ImplementacionBD implements InterfazDAO {
                 enun.setRuta(rs.getString("ruta"));
                 enunciados.put(enun.getId(), enun);
             }
-            
+
             rs.close();
             stmt.close();
             con.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        
+
         return enunciados;
     }
 
-
     public HashMap<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
         ResultSet rs = null;
-		Enunciado enunciado;
-		HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+        Enunciado enunciado;
+        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
 
-		this.openConnection();
+        this.openConnection();
 
-		try {
-                        
-			stmt = con.prepareStatement(SQLENUNCIADO);
-                        stmt.setInt(1, sesionElegida);
-			rs = stmt.executeQuery();
+        try {
 
-			while (rs.next()) {
-				enunciado = new Enunciado();
-				enunciado.setDescripcion(rs.getString("descripcion"));
-				String dificultadStr = rs.getString("nivel");
-                                if (dificultadStr != null) 
-                                {
-                                    Dificultad dificultad = Dificultad.valueOf(dificultadStr.toUpperCase());
-                                    enunciado.setDificultad(dificultad);
-                                }
-				enunciado.setDisponible(rs.getBoolean("disponible"));
-				enunciado.setRuta(rs.getString("ruta"));
-                                
-				enunciados.put(enunciado.getId(), enunciado);
-			}
+            stmt = con.prepareStatement(SQLENUNCIADO);
+            stmt.setInt(1, sesionElegida);
+            rs = stmt.executeQuery();
 
-			rs.close();
-			stmt.close();
-			con.close();
+            while (rs.next()) {
+                enunciado = new Enunciado();
+                enunciado.setDescripcion(rs.getString("descripcion"));
+                String dificultadStr = rs.getString("nivel");
+                if (dificultadStr != null) {
+                    Dificultad dificultad = Dificultad.valueOf(dificultadStr.toUpperCase());
+                    enunciado.setDificultad(dificultad);
+                }
+                enunciado.setDisponible(rs.getBoolean("disponible"));
+                enunciado.setRuta(rs.getString("ruta"));
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+                enunciados.put(enunciado.getId(), enunciado);
+            }
 
-		}
-		return enunciados;
+            rs.close();
+            stmt.close();
+            con.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return enunciados;
     }
-    
+
     @Override
     public HashMap<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado) {
         ConvocatoriaExamen ce = null;
@@ -141,8 +140,8 @@ public class ImplementacionBD implements InterfazDAO {
                 ce.setCurso(rs.getString("CURSO"));
                 ce.setFecha(rs.getDate("FECHA").toLocalDate());
                 ce.setDescripcion(rs.getString("DESCRIPCION"));
-                
-                
+                ce.setEnunciado(rs.getInt("ID_ENUNCIADO"));
+
                 est.put(ce.getId(), ce);
             }
             rs.close();
@@ -181,4 +180,23 @@ public class ImplementacionBD implements InterfazDAO {
 		return ok;
 
 	}
+
+    public boolean modConvocatoriaExamen(int Encunciado, int Convocatoria) {
+        boolean modificado = false;
+        this.openConnection();
+        try {
+            stmt = con.prepareStatement(MODCONVOCATORIA);
+            stmt.setInt(1, Encunciado);
+            stmt.setInt(2, Convocatoria);
+            if (stmt.executeUpdate() > 0) {
+                modificado = true;
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("Error de SQL.");
+        }
+        return modificado;
+    }
+
 }

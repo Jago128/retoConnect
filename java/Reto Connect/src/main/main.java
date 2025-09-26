@@ -67,6 +67,24 @@ public class main {
         }
     }
 
+    public static void modCOnvocatotriaExamen(ImplementacionBD im){
+        boolean comprobar=false;
+        int enunciado=0;
+        int convocatoriaExamen=0;
+        
+        System.out.println("Introduzca el id de la convocatiria ha editar: ");
+        convocatoriaExamen= Utilidades.leerInt();
+         System.out.println("Introduzca el id del enunciado ha asignar: ");
+         enunciado=Utilidades.leerInt();
+         
+         comprobar=im.modConvocatoriaExamen(enunciado, convocatoriaExamen);
+         
+         if(!comprobar){
+             System.out.println("No existe ninguna Convocatoria con ese id.");
+         }else{
+             System.out.println("Se ha modificado correctamente.");
+         }
+    }
     public static void main(String[] args) {
         LoginController cont = new LoginController();
         // TODO Auto-generated method stub
