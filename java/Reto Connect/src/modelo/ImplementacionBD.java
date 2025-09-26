@@ -1,38 +1,30 @@
 package modelo;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.ResourceBundle;
-import java.util.TreeMap;
+import java.sql.Date;
+import java.sql.*;
+import java.util.*;
 
 public class ImplementacionBD implements InterfazDAO {
 
-    // Atributos
     private Connection con;
     private PreparedStatement stmt;
 
-    // Los siguientes atributos se utilizan para recoger los valores del fich de
-    // configuraci n
+    @SuppressWarnings("FieldMayBeFinal")
     private ResourceBundle configFile;
     private String driverBD;
     private String urlBD;
     private String userBD;
     private String passwordBD;
 
-    // dej
     final String SQLGETMODELS = "INSERT INTO UNIDAD_DIDACTICA VALUES ( ?,?,?,?)";
     final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
     final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
     final String SQLMOSTRARSESIONES = "SELECT * FROM CONVOCATORIA_EXAMEN C JOIN ENUNCIADO E ON C.ID_ENUNCIADO=E.ID_ENUNCIADO WHERE E.ID_ENUNCIADO = ?";
+    final String SQLADDUD_DIDAC = "INSERT INTO UNIDAD_DIDACTICA (ACRONIMO, TITULO, EVALUACION, DESCRIPCION) VALUES (?,?,?,?)";
+    final String SQLADDCONVOCATORIA_EXAM = "INSERT INTO CONVOCATORIA_EXAMEN (CONVOCATORIA, DESCRIPCION, FECHA, CURSO) VALUES (?,?,?,?)";
+    final String SQLADDENUN = "INSERT INTO ENUNCIADO (DESCRIPCION, NIVEL, DISPONIBLE, RUTA) VALUES (?,?,?,?)";
+    final String SQLSEARCHENUNS = "SELECT * FROM ENUNCIADO";
+    final String SQLSEARCHENUNID = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO=?";
 
-
-
-    // Para la conexi n utilizamos un fichero de configuaraci n, config que
-    // guardamos en el paquete control:
     public ImplementacionBD() {
         this.configFile = ResourceBundle.getBundle("configClase");
         this.driverBD = this.configFile.getString("Driver");
@@ -45,7 +37,7 @@ public class ImplementacionBD implements InterfazDAO {
         try {
             con = DriverManager.getConnection(urlBD, this.userBD, this.passwordBD);
         } catch (SQLException e) {
-            System.out.println("Error al intentar abrir la BD");
+            System.out.println("Error al intentar abrir la BD.");
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +58,7 @@ public class ImplementacionBD implements InterfazDAO {
                 Enunciado enun=new Enunciado();
                 enun.setId(rs.getInt("id_enunciado"));
                 enun.setDescripcion(rs.getString("descripcion"));
-                enun.setDificultad(Dificultad.valueOf(rs.getString("nivel")));
+                enun.setDificultad(Nivel.valueOf(rs.getString("nivel")));
                 enun.setDisponible(rs.getBoolean("disponible"));
                 enun.setRuta(rs.getString("ruta"));
                 enunciados.put(enun.getId(), enun);
@@ -81,7 +73,6 @@ public class ImplementacionBD implements InterfazDAO {
         
         return enunciados;
     }
-
 
     public HashMap<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
         ResultSet rs = null;
@@ -102,7 +93,7 @@ public class ImplementacionBD implements InterfazDAO {
 				String dificultadStr = rs.getString("nivel");
                                 if (dificultadStr != null) 
                                 {
-                                    Dificultad dificultad = Dificultad.valueOf(dificultadStr.toUpperCase());
+                                    Nivel dificultad = Nivel.valueOf(dificultadStr.toUpperCase());
                                     enunciado.setDificultad(dificultad);
                                 }
 				enunciado.setDisponible(rs.getBoolean("disponible"));
@@ -152,5 +143,110 @@ public class ImplementacionBD implements InterfazDAO {
             System.out.println("Error de SQL.");
         }
         return est;
+    }
+        
+    @Override
+    public boolean addUd_Didactica(UnidadDidactica uD) {
+        boolean register = false;
+
+        this.openConnection();
+        try {
+            stmt = con.prepareStatement(SQLADDUD_DIDAC);
+            stmt.setString(1, uD.getAcronimo());
+            stmt.setString(2, uD.getTitulo());
+            stmt.setString(3, uD.getEvaluacion());
+            stmt.setString(4, uD.getDescripcion());
+            if (stmt.executeUpdate() > 0) {
+                register = true;
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return register;
+    }
+
+    @Override
+    public boolean addConvExam(ConvocatoriaExamen cE) {
+        boolean register = false;
+
+        this.openConnection();
+        try {
+            stmt = con.prepareStatement(SQLADDUD_DIDAC);
+            stmt.setString(1, cE.getConvocatoria());
+            stmt.setString(2, cE.getDescripcion());
+            stmt.setDate(3, Date.valueOf(cE.getFecha()));
+            stmt.setString(4, cE.getCurso());
+            if (stmt.executeUpdate() > 0) {
+                register = true;
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return register;
+    }
+
+    @Override
+    public Map<Integer, Enunciado> searchEnuns() {
+        Map<Integer, Enunciado> enuns = new TreeMap<>();
+        this.openConnection();
+        try {
+            stmt = con.prepareStatement(SQLSEARCHENUNS);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                enuns.put(rs.getInt("ID_ENUNCIADO"), new Enunciado(rs.getInt("ID_ENUNCIADO"), rs.getString("DESCRIPCION"), 
+                        Nivel.valueOf(rs.getString("NIVEL").toUpperCase()), rs.getBoolean("DISPONIBLE"), rs.getString("RUTA")));
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return enuns;
+    }
+
+    @Override
+    public boolean searchEnunID(int id) {
+        boolean found = false;
+
+        this.openConnection();
+        try {
+            stmt = con.prepareStatement(SQLSEARCHENUNID);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                found = true;
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return found;
+    }
+
+    @Override
+    public boolean addEnun(Enunciado enun) {
+        boolean register = false;
+
+        this.openConnection();
+        try {
+            stmt = con.prepareStatement(SQLADDENUN);
+            stmt.setString(1, enun.getDescripcion());
+            stmt.setString(2, enun.getDificultad().toString().toUpperCase());
+            stmt.setBoolean(3, enun.isDisponible());
+            stmt.setString(4, enun.getRuta());
+            if (stmt.executeUpdate() > 0) {
+                register = true;
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return register;
     }
 }

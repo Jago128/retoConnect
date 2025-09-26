@@ -1,18 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package modelo;
 
 import java.util.Map;
 
-/**
- *
- * @author 2dami
- */
 public interface InterfazDAO {
+    public boolean addUd_Didactica(UnidadDidactica uD);
+    
+    public boolean addConvExam(ConvocatoriaExamen cE);
+    
+    public boolean addEnun(Enunciado enun);
+    
+    public Map<Integer, Enunciado> searchEnuns();
+    
+    public boolean searchEnunID(int id);
+    
     public Map<Integer, Enunciado> mostrarEnunciados();
+    
     public  Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
+    
     public Map<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado);
 }

@@ -1,30 +1,29 @@
 package modelo;
 
 public class Enunciado {
+
     private int id;
     private String descripcion;
-    private Dificultad dificultad;
+    private Nivel dificultad;
     private boolean disponible;
     private String ruta;
-            
-    
-    public Enunciado(int id, String descripcion, Dificultad dificultad, boolean disponible, String ruta) {
+
+    public Enunciado() {
+        this.id = 0;
+        this.descripcion = "";
+        this.dificultad = Nivel.NONE;
+        this.disponible = false;
+        this.ruta = "";
+    }
+
+    public Enunciado(int id, String descripcion, Nivel dificultad, boolean disponible, String ruta) {
         this.id = id;
         this.descripcion = descripcion;
         this.dificultad = dificultad;
         this.disponible = disponible;
         this.ruta = ruta;
     }
-    
-    public Enunciado() {
-        this.id = 0;
-        this.descripcion = "";
-        this.dificultad = null;
-        this.disponible = false;
-        this.ruta = "";
-    }
 
-    // Getters
     public int getId() {
         return id;
     }
@@ -33,7 +32,7 @@ public class Enunciado {
         return descripcion;
     }
 
-    public Dificultad getDificultad() {
+    public Nivel getDificultad() {
         return dificultad;
     }
 
@@ -45,7 +44,6 @@ public class Enunciado {
         return ruta;
     }
 
-    // Setters
     public void setId(int id) {
         this.id = id;
     }
@@ -54,7 +52,7 @@ public class Enunciado {
         this.descripcion = descripcion;
     }
 
-    public void setDificultad(Dificultad dificultad) {
+    public void setDificultad(Nivel dificultad) {
         this.dificultad = dificultad;
     }
 
@@ -66,11 +64,9 @@ public class Enunciado {
         this.ruta = ruta;
     }
 
-    // toString
     @Override
     public String toString() {
         return "Enunciado{id=" + id + ", descripcion='" + descripcion + "', dificultad=" + dificultad + ", disponible=" + disponible + ", ruta='" + ruta + "'}";
     }
-    
-}
 
+}
