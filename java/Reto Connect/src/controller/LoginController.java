@@ -30,6 +30,10 @@ public class LoginController {
         return dao.addEnun(enun);
     }
     
+    public Map<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado){
+        return dao.mostrarConvocatorias(idEnunciado);
+    }
+    
     public boolean modConvocatoriaExamen(int encunciado, int convocatoria){
         return dao.modConvocatoriaExamen(encunciado, convocatoria);
         

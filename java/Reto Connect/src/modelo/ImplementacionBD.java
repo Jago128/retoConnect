@@ -1,6 +1,7 @@
 package modelo;
 import java.sql.Date;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class ImplementacionBD implements InterfazDAO {
@@ -17,6 +18,7 @@ public class ImplementacionBD implements InterfazDAO {
 
 
     final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
+    final String SQL_EXAMEN_ENUNCIADO = "SELECT * FROM CONVOCATORIA_EXAMEN WHERE ID_ENUNCIADO = ?";
     final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
     final String SQLMOSTRARSESIONES = "SELECT * FROM CONVOCATORIA_EXAMEN C JOIN ENUNCIADO E ON C.ID_ENUNCIADO=E.ID_ENUNCIADO WHERE E.ID_ENUNCIADO = ?";
     final String SQLADDUD_DIDAC = "INSERT INTO UNIDAD_DIDACTICA (ACRONIMO, TITULO, EVALUACION, DESCRIPCION) VALUES (?,?,?,?)";
@@ -48,6 +50,7 @@ public class ImplementacionBD implements InterfazDAO {
             e.printStackTrace();
         }
     }
+    
     public HashMap<Integer, Enunciado> mostrarEnunciados() {
         ResultSet rs;
         HashMap<Integer, Enunciado> enunciados = new HashMap<>();

@@ -195,6 +195,7 @@ public class Main {
 
     public static void mostrarDocumEnun(ImplementacionBD im) {
         HashMap<Integer, Enunciado> enuns = new HashMap<>();
+        HashMap<Integer, ConvocatoriaExamen> convs = new HashMap<>();
         enuns = im.mostrarEnunciados();
         int idEnun = -1;
         for (Enunciado enun : enuns.values()) {
@@ -209,7 +210,10 @@ public class Main {
             }
         }while(!enuns.containsKey(idEnun));
         
-        System.out.println(enuns.get(idEnun).toString());
+        convs = im.mostrarConvocatorias(idEnun);
+        for(ConvocatoriaExamen conv:convs.values()){
+            System.out.println(conv.toString());
+        }
     }
 
     public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(ImplementacionBD im) {
