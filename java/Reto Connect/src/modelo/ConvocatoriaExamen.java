@@ -9,21 +9,24 @@ public class ConvocatoriaExamen {
     private String descripcion;
     private LocalDate fecha;
     private String curso;
-
-    public ConvocatoriaExamen() {
-        this.id = 0;
-        this.convocatoria = "";
-        this.descripcion = "";
-        this.fecha = LocalDate.now();
-        this.curso = "";
+    private int enunciado;
+    
+    
+    public ConvocatoriaExamen(){
+        this.id=0;
+        this.convocatoria="";
+        this.descripcion="";
+        this.fecha= LocalDate.now();
+        this.curso="";
+        this.enunciado=0;
     }
-
-    public ConvocatoriaExamen(int id, String convocatoria, String descripcion, LocalDate fecha, String curso) {
-        this.id = id;
-        this.convocatoria = convocatoria;
-        this.descripcion = descripcion;
-        this.fecha = fecha;
-        this.curso = curso;
+        public ConvocatoriaExamen(int id, String convocatoria, String descripcion, LocalDate fecha, String curso, int enunciado){
+        this.id=id;
+        this.convocatoria=convocatoria;
+        this.descripcion=descripcion;
+        this.fecha= fecha;
+        this.curso=curso;
+        this.enunciado=enunciado;
     }
 
     public int getId() {
@@ -66,8 +69,18 @@ public class ConvocatoriaExamen {
         this.curso = curso;
     }
 
+    public int getEnunciado() {
+        return enunciado;
+    }
+
+    public void setEnunciado(int enunciado) {
+        this.enunciado = enunciado;
+    }
+
     @Override
     public String toString() {
-        return "ConvocatoriaExamen{" + "id=" + id + ", convocatoria=" + convocatoria + ", descripcion=" + descripcion + ", fecha=" + fecha + ", curso=" + curso + '}';
+        return "ConvocatoriaExamen{" + "id=" + id + ", convocatoria=" + convocatoria + ", descripcion=" + descripcion + ", fecha=" + fecha + ", curso=" + curso + ", enunciado=" + enunciado + '}';
     }
+
+    
 }

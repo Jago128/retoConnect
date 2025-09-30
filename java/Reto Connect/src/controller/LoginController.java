@@ -29,4 +29,9 @@ public class LoginController {
     public boolean addEnun(Enunciado enun) {
         return dao.addEnun(enun);
     }
+    
+    public boolean modConvocatoriaExamen(int encunciado, int convocatoria){
+        return dao.modConvocatoriaExamen(encunciado, convocatoria);
+        
+    }
 }

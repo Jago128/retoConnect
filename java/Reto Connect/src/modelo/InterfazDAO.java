@@ -18,4 +18,6 @@ public interface InterfazDAO {
     public  Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
     
     public Map<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado);
+    
+    public boolean modConvocatoriaExamen(int enunciado, int convocatoria);
 }
