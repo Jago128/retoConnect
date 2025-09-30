@@ -28,7 +28,7 @@ public class ImplementacionBD implements InterfazDAO {
     final String SQLSEARCHENUNID = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO=?";
     final String SQLCREARENUNCIADO = "INSERT INTO ENUNCIADO VALUES (?, ? ,?, ?, ?)";
 
-    final String MODCONVOCATORIA = "UPDATE CONVOCATORIA_EXAMEN SET ID_ENUNCIADO = ?, WHERE ID_CONVOCATORIA_EXAMEN = ?";
+    final String MODCONVOCATORIA = "UPDATE CONVOCATORIA_EXAMEN SET ID_ENUNCIADO = ? WHERE ID_CONVOCATORIA_EXAMEN = ?";
 
     // Para la conexi n utilizamos un fichero de configuaraci n, config que
     // guardamos en el paquete control:
