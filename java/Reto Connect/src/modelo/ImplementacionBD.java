@@ -83,15 +83,20 @@ public class ImplementacionBD implements InterfazDAO {
 
     public HashMap<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
         ResultSet rs = null;
-        Enunciado enunciado;
-        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+		Enunciado enunciado;
+		HashMap<Integer, Enunciado> enunciados = new HashMap<>();
 
-        this.openConnection();
+		this.openConnection();
 
-        try {
+		try {
+                        
+			stmt = con.prepareStatement(SQLENUNCIADO);
+                        stmt.setInt(1, sesionElegida);
+			rs = stmt.executeQuery();
 
 			while (rs.next()) {
 				enunciado = new Enunciado();
+                                enunciado.setId(rs.getInt("id_enunciado"));
 				enunciado.setDescripcion(rs.getString("descripcion"));
 				String dificultadStr = rs.getString("nivel");
                                 if (dificultadStr != null) 
@@ -104,33 +109,16 @@ public class ImplementacionBD implements InterfazDAO {
                                 
 				enunciados.put(enunciado.getId(), enunciado);
 			}
-            stmt = con.prepareStatement(SQLENUNCIADO);
-            stmt.setInt(1, sesionElegida);
-            rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                enunciado = new Enunciado();
-                enunciado.setDescripcion(rs.getString("descripcion"));
-                String dificultadStr = rs.getString("nivel");
-                if (dificultadStr != null) {
-                    Nivel dificultad = Nivel.valueOf(dificultadStr.toUpperCase());
-                    enunciado.setDificultad(dificultad);
-                }
-                enunciado.setDisponible(rs.getBoolean("disponible"));
-                enunciado.setRuta(rs.getString("ruta"));
+			rs.close();
+			stmt.close();
+			con.close();
 
-                enunciados.put(enunciado.getId(), enunciado);
-            }
+		} catch (SQLException e) {
+			e.printStackTrace();
 
-            rs.close();
-            stmt.close();
-            con.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        }
-        return enunciados;
+		}
+		return enunciados;
     }
 
     @Override

@@ -211,8 +211,12 @@ public class Main {
         }while(!enuns.containsKey(idEnun));
         
         convs = im.mostrarConvocatorias(idEnun);
-        for(ConvocatoriaExamen conv:convs.values()){
-            System.out.println(conv.toString());
+        if(convs.size() > 0){
+            for(ConvocatoriaExamen conv:convs.values()){
+                System.out.println(conv.toString());
+            }
+        }else{
+            System.out.println("No hay ningun examen asociado a este enunciado.");
         }
     }
 
