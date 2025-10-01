@@ -10,23 +10,23 @@ public class ConvocatoriaExamen {
     private LocalDate fecha;
     private String curso;
     private int enunciado;
-    
-    
-    public ConvocatoriaExamen(){
-        this.id=0;
-        this.convocatoria="";
-        this.descripcion="";
-        this.fecha= LocalDate.now();
-        this.curso="";
-        this.enunciado=0;
+
+    public ConvocatoriaExamen() {
+        this.id = 0;
+        this.convocatoria = "";
+        this.descripcion = "";
+        this.fecha = LocalDate.now();
+        this.curso = "";
+        this.enunciado = 0;
     }
-        public ConvocatoriaExamen(int id, String convocatoria, String descripcion, LocalDate fecha, String curso, int enunciado){
-        this.id=id;
-        this.convocatoria=convocatoria;
-        this.descripcion=descripcion;
-        this.fecha= fecha;
-        this.curso=curso;
-        this.enunciado=enunciado;
+
+    public ConvocatoriaExamen(int id, String convocatoria, String descripcion, LocalDate fecha, String curso, int enunciado) {
+        this.id = id;
+        this.convocatoria = convocatoria;
+        this.descripcion = descripcion;
+        this.fecha = fecha;
+        this.curso = curso;
+        this.enunciado = enunciado;
     }
 
     public int getId() {
@@ -82,5 +82,4 @@ public class ConvocatoriaExamen {
         return "ConvocatoriaExamen{" + "id=" + id + ", convocatoria=" + convocatoria + ", descripcion=" + descripcion + ", fecha=" + fecha + ", curso=" + curso + ", enunciado=" + enunciado + '}';
     }
 
-    
 }

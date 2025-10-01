@@ -1,4 +1,5 @@
 package modelo;
+
 import java.sql.Date;
 import java.sql.*;
 import java.time.LocalDate;
@@ -15,7 +16,6 @@ public class ImplementacionBD implements InterfazDAO {
     private String urlBD;
     private String userBD;
     private String passwordBD;
-
 
     final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
     final String SQL_EXAMEN_ENUNCIADO = "SELECT * FROM CONVOCATORIA_EXAMEN WHERE ID_ENUNCIADO = ?";
@@ -50,7 +50,7 @@ public class ImplementacionBD implements InterfazDAO {
             e.printStackTrace();
         }
     }
-    
+
     public HashMap<Integer, Enunciado> mostrarEnunciados() {
         ResultSet rs;
         HashMap<Integer, Enunciado> enunciados = new HashMap<>();
@@ -83,42 +83,41 @@ public class ImplementacionBD implements InterfazDAO {
 
     public HashMap<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
         ResultSet rs = null;
-		Enunciado enunciado;
-		HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+        Enunciado enunciado;
+        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
 
-		this.openConnection();
+        this.openConnection();
 
-		try {
-                        
-			stmt = con.prepareStatement(SQLENUNCIADO);
-                        stmt.setInt(1, sesionElegida);
-			rs = stmt.executeQuery();
+        try {
 
-			while (rs.next()) {
-				enunciado = new Enunciado();
-                                enunciado.setId(rs.getInt("id_enunciado"));
-				enunciado.setDescripcion(rs.getString("descripcion"));
-				String dificultadStr = rs.getString("nivel");
-                                if (dificultadStr != null) 
-                                {
-                                    Nivel dificultad = Nivel.valueOf(dificultadStr.toUpperCase());
-                                    enunciado.setDificultad(dificultad);
-                                }
-				enunciado.setDisponible(rs.getBoolean("disponible"));
-				enunciado.setRuta(rs.getString("ruta"));
-                                
-				enunciados.put(enunciado.getId(), enunciado);
-			}
+            stmt = con.prepareStatement(SQLENUNCIADO);
+            stmt.setInt(1, sesionElegida);
+            rs = stmt.executeQuery();
 
-			rs.close();
-			stmt.close();
-			con.close();
+            while (rs.next()) {
+                enunciado = new Enunciado();
+                enunciado.setId(rs.getInt("id_enunciado"));
+                enunciado.setDescripcion(rs.getString("descripcion"));
+                String dificultadStr = rs.getString("nivel");
+                if (dificultadStr != null) {
+                    Nivel dificultad = Nivel.valueOf(dificultadStr.toUpperCase());
+                    enunciado.setDificultad(dificultad);
+                }
+                enunciado.setDisponible(rs.getBoolean("disponible"));
+                enunciado.setRuta(rs.getString("ruta"));
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+                enunciados.put(enunciado.getId(), enunciado);
+            }
 
-		}
-		return enunciados;
+            rs.close();
+            stmt.close();
+            con.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return enunciados;
     }
 
     @Override
@@ -152,7 +151,7 @@ public class ImplementacionBD implements InterfazDAO {
         }
         return est;
     }
-        
+
     @Override
     public boolean addUd_Didactica(UnidadDidactica uD) {
         boolean register = false;
@@ -205,7 +204,7 @@ public class ImplementacionBD implements InterfazDAO {
             stmt = con.prepareStatement(SQLSEARCHENUNS);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                enuns.put(rs.getInt("ID_ENUNCIADO"), new Enunciado(rs.getInt("ID_ENUNCIADO"), rs.getString("DESCRIPCION"), 
+                enuns.put(rs.getInt("ID_ENUNCIADO"), new Enunciado(rs.getInt("ID_ENUNCIADO"), rs.getString("DESCRIPCION"),
                         Nivel.valueOf(rs.getString("NIVEL").toUpperCase()), rs.getBoolean("DISPONIBLE"), rs.getString("RUTA")));
             }
             stmt.close();
@@ -257,32 +256,32 @@ public class ImplementacionBD implements InterfazDAO {
         }
         return register;
     }
-    
+
     //Insertar un enunciado
-	public boolean crearEnunciado(Enunciado enunciado) {
+    public boolean crearEnunciado(Enunciado enunciado) {
 
-		boolean ok = false;
-		this.openConnection();
-		try {
-			// Preparamos la sentencia stmt con la conexion y sentencia sql correspondiente
-			stmt = con.prepareStatement(SQLCREARENUNCIADO);
-			stmt.setString(1, enunciado.getDescripcion());
-			stmt.setString(2, enunciado.getDificultad().toString()); //castear a string para introducirlo en la base de datos
-			stmt.setBoolean(3, enunciado.isDisponible());
-			stmt.setString(4, enunciado.getRuta());
+        boolean ok = false;
+        this.openConnection();
+        try {
+            // Preparamos la sentencia stmt con la conexion y sentencia sql correspondiente
+            stmt = con.prepareStatement(SQLCREARENUNCIADO);
+            stmt.setString(1, enunciado.getDescripcion());
+            stmt.setString(2, enunciado.getDificultad().toString()); //castear a string para introducirlo en la base de datos
+            stmt.setBoolean(3, enunciado.isDisponible());
+            stmt.setString(4, enunciado.getRuta());
 
-			if (stmt.executeUpdate() > 0) {
-				ok = true;
-			}
+            if (stmt.executeUpdate() > 0) {
+                ok = true;
+            }
 
-			stmt.close();
-			con.close();
-		} catch (SQLException e) {
-			System.out.println("Error al verificar credenciales: " + e.getMessage());
-		}
-		return ok;
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            System.out.println("Error al verificar credenciales: " + e.getMessage());
+        }
+        return ok;
 
-	}
+    }
 
     public boolean modConvocatoriaExamen(int Encunciado, int Convocatoria) {
         boolean modificado = false;

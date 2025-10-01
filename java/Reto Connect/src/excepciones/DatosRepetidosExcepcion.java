@@ -10,7 +10,8 @@ package excepciones;
  * @author kevin
  */
 public class DatosRepetidosExcepcion {
-     public DatosRepetidosExcepcion(){
-		      System.out.println("Los datos introducidos ya estan en la base de datos. Prueba con otros datos.");
-	}
+
+    public DatosRepetidosExcepcion() {
+        System.out.println("Los datos introducidos ya estan en la base de datos. Prueba con otros datos.");
+    }
 }

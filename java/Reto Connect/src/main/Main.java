@@ -18,8 +18,8 @@ public class Main {
                 + "4. Consultar en que sesion se ha utilizado un enunciado \n5. Ver documento asociado ha un enunciado \n6. Asignar un enunciado ha una sesion \n7. Salir\n"
                 + "Introduce una opcion: ", 1, 7);
     }
-    
-        public static void addUd_ConvExam(LoginController cont) {
+
+    public static void addUd_ConvExam(LoginController cont) {
         System.out.println("1. Unidad Didactica.\n2. Convocatoria Examen");
         int menu = Utilidades.leerInt(1, 2);
         switch (menu) {
@@ -201,21 +201,21 @@ public class Main {
         for (Enunciado enun : enuns.values()) {
             System.out.println(enun.toString());
         }
-        
-        do{
+
+        do {
             System.out.println("ID del enunciado que quieres: ");
             idEnun = Utilidades.leerInt();
-            if(!enuns.containsKey(idEnun)){
+            if (!enuns.containsKey(idEnun)) {
                 System.out.println("Id invalido.");
             }
-        }while(!enuns.containsKey(idEnun));
-        
+        } while (!enuns.containsKey(idEnun));
+
         convs = im.mostrarConvocatorias(idEnun);
-        if(convs.size() > 0){
-            for(ConvocatoriaExamen conv:convs.values()){
+        if (convs.size() > 0) {
+            for (ConvocatoriaExamen conv : convs.values()) {
                 System.out.println(conv.toString());
             }
-        }else{
+        } else {
             System.out.println("No hay ningun examen asociado a este enunciado.");
         }
     }
@@ -226,7 +226,7 @@ public class Main {
         sesionElegida = Utilidades.leerInt();
 
         HashMap<Integer, Enunciado> enunciados = new HashMap<>();
-        
+
         enunciados = im.getEnunciadosSesion(sesionElegida);
         for (Enunciado enunciado : enunciados.values()) {
             System.out.println(enunciado);
@@ -235,7 +235,7 @@ public class Main {
 
         return enunciados;
     }
-    
+
     public static void mostrarConvocatorias(ImplementacionBD im) {
         int id = 0;
         HashMap<Integer, ConvocatoriaExamen> mapaConvocatoria = new HashMap<>();
@@ -250,31 +250,31 @@ public class Main {
             }
         }
     }
-    
-    public static void modConvocatotriaExamen(ImplementacionBD im){
-        boolean comprobar=false;
-        int enunciado=0;
-        int convocatoriaExamen=0;
-        
+
+    public static void modConvocatotriaExamen(ImplementacionBD im) {
+        boolean comprobar = false;
+        int enunciado = 0;
+        int convocatoriaExamen = 0;
+
         System.out.println("Introduzca el id de la convocatiria ha editar: ");
-        convocatoriaExamen= Utilidades.leerInt();
-         System.out.println("Introduzca el id del enunciado ha asignar: ");
-         enunciado=Utilidades.leerInt();
-         
-         comprobar=im.modConvocatoriaExamen(enunciado, convocatoriaExamen);
-         
-         if(!comprobar){
-             System.out.println("No existe ninguna Convocatoria con ese id.");
-         }else{
-             System.out.println("Se ha modificado correctamente.");
-         }
+        convocatoriaExamen = Utilidades.leerInt();
+        System.out.println("Introduzca el id del enunciado ha asignar: ");
+        enunciado = Utilidades.leerInt();
+
+        comprobar = im.modConvocatoriaExamen(enunciado, convocatoriaExamen);
+
+        if (!comprobar) {
+            System.out.println("No existe ninguna Convocatoria con ese id.");
+        } else {
+            System.out.println("Se ha modificado correctamente.");
+        }
     }
 
     public static void main(String[] args) {
         LoginController cont = new LoginController();
         // TODO Auto-generated method stub
         int opcion;
-        
+
         do {
             opcion = mostrarMenu();
             ImplementacionBD im = new ImplementacionBD();
@@ -283,23 +283,23 @@ public class Main {
                 case 1:
                     addUd_ConvExam(cont);
                     break;
-                    
+
                 case 2:
                     addEnum(cont);
                     break;
-                    
+
                 case 3:
                     mostrarEnunciadosSesion(im);
                     break;
-                    
+
                 case 4:
                     mostrarConvocatorias(im);
                     break;
-                    
+
                 case 5:
                     mostrarDocumEnun(im);
                     break;
-                    
+
                 case 6:
                     modConvocatotriaExamen(im);
                     break;

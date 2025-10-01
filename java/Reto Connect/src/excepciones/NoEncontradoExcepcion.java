@@ -10,7 +10,8 @@ package excepciones;
  * @author kevin
  */
 public class NoEncontradoExcepcion extends Exception {
-    public NoEncontradoExcepcion(){
-		      System.out.println("Los datos introducidos no están en la base de datos");
-	}
+
+    public NoEncontradoExcepcion() {
+        System.out.println("Los datos introducidos no están en la base de datos");
+    }
 }
