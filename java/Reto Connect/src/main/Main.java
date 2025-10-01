@@ -202,10 +202,8 @@ public class Main {
         HashMap<Integer, ConvocatoriaExamen> convs;
         Enunciado chosenStatement;
         int idStatement = -1;
-        for (Enunciado enun : enuns.values()) {
-            System.out.println(enun.toString());
-        }
-
+        
+        showStatements(enuns);
         do {
             System.out.println("ID del enunciado que quieres: ");
             idStatement = Utilidades.leerInt();
@@ -245,8 +243,12 @@ public class Main {
     public static void mostrarConvocatorias(Controller cont) {
         int id = 0;
         HashMap<Integer, ConvocatoriaExamen> mapaConvocatoria;
+        HashMap<Integer, Enunciado> enuns = new HashMap<>(cont.getStatements());
+        
+        showStatements(enuns);
         System.out.println("Introduzca el id del Enunciado:");
         id = utilidades.Utilidades.leerInt();
+        
         mapaConvocatoria = new HashMap<>(cont.getExams(id));
         if (mapaConvocatoria.isEmpty()) {
             System.out.println("EL enunciado introducido no existe");
@@ -273,6 +275,18 @@ public class Main {
             System.out.println("No existe ninguna Convocatoria con ese id.");
         } else {
             System.out.println("Se ha modificado correctamente.");
+        }
+    }
+    
+    public static void showStatements(HashMap<Integer, Enunciado> statements){
+        for (Enunciado statement : statements.values()) {
+            System.out.println(statement.toString());
+        }
+    }
+    
+    public static void showSessions(HashMap<Integer, UnidadDidactica> sessions){
+        for (UnidadDidactica session : sessions.values()) {
+            System.out.println(session.toString());
         }
     }
 
