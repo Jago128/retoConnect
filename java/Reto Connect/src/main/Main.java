@@ -7,6 +7,9 @@ import java.util.*;
 
 import modelo.*;
 import controller.Controller;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import utilidades.Utilidades;
 
 public class Main {
@@ -195,28 +198,32 @@ public class Main {
     }
 
     public static void mostrarDocumEnun(Controller cont) {
-        HashMap<Integer, Enunciado> enuns = new HashMap<>(cont.getStatements());;
+        HashMap<Integer, Enunciado> enuns = new HashMap<>(cont.getStatements());
         HashMap<Integer, ConvocatoriaExamen> convs;
-        int idEnun = -1;
+        Enunciado chosenStatement;
+        int idStatement = -1;
         for (Enunciado enun : enuns.values()) {
             System.out.println(enun.toString());
         }
 
         do {
             System.out.println("ID del enunciado que quieres: ");
-            idEnun = Utilidades.leerInt();
-            if (!enuns.containsKey(idEnun)) {
+            idStatement = Utilidades.leerInt();
+            if (!enuns.containsKey(idStatement)) {
                 System.out.println("Id invalido.");
             }
-        } while (!enuns.containsKey(idEnun));
+        } while (!enuns.containsKey(idStatement));
 
-        convs = new HashMap<>(cont.getExams(idEnun));
-        if (convs.size() > 0) {
-            for (ConvocatoriaExamen conv : convs.values()) {
-                System.out.println(conv.toString());
+        chosenStatement = enuns.get(idStatement);
+
+        File document = new File(chosenStatement.getRuta());
+
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(document);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        } else {
-            System.out.println("No hay ningun examen asociado a este enunciado.");
         }
     }
 
