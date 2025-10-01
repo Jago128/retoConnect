@@ -51,7 +51,7 @@ public class ImplementacionBD implements InterfazDAO {
         }
     }
 
-    public HashMap<Integer, Enunciado> mostrarEnunciados() {
+    public HashMap<Integer, Enunciado> getStatements() {
         ResultSet rs;
         HashMap<Integer, Enunciado> enunciados = new HashMap<>();
 
@@ -121,7 +121,7 @@ public class ImplementacionBD implements InterfazDAO {
     }
 
     @Override
-    public HashMap<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado) {
+    public HashMap<Integer, ConvocatoriaExamen> getExams(int statementId) {
         ConvocatoriaExamen ce = null;
         ResultSet rs = null;
         HashMap<Integer, ConvocatoriaExamen> est = new HashMap<>();
@@ -130,7 +130,7 @@ public class ImplementacionBD implements InterfazDAO {
 
         try {
             stmt = con.prepareStatement(SQLMOSTRARSESIONES);
-            stmt.setInt(1, idEnunciado);
+            stmt.setInt(1, statementId);
             rs = stmt.executeQuery();
             while (rs.next()) {
                 ce = new ConvocatoriaExamen();

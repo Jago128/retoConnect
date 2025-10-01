@@ -14,11 +14,11 @@ public interface InterfazDAO {
 
     public boolean searchEnunID(int id);
 
-    public Map<Integer, Enunciado> mostrarEnunciados();
-
     public Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
+    
+    public Map<Integer, Enunciado> getStatements();
 
-    public Map<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado);
+    public Map<Integer, ConvocatoriaExamen> getExams(int statementId);
 
     public boolean modConvocatoriaExamen(int enunciado, int convocatoria);
 }

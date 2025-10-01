@@ -6,7 +6,7 @@ import java.time.temporal.*;
 import java.util.*;
 
 import modelo.*;
-import controller.LoginController;
+import controller.Controller;
 import utilidades.Utilidades;
 
 public class Main {
@@ -19,7 +19,7 @@ public class Main {
                 + "Introduce una opcion: ", 1, 7);
     }
 
-    public static void addUd_ConvExam(LoginController cont) {
+    public static void addUd_ConvExam(Controller cont) {
         System.out.println("1. Unidad Didactica.\n2. Convocatoria Examen");
         int menu = Utilidades.leerInt(1, 2);
         switch (menu) {
@@ -135,7 +135,7 @@ public class Main {
         return false;
     }
 
-    public static void addEnum(LoginController cont) {
+    public static void addEnum(Controller cont) {
         String desc, levelCheck, availCheck, route;
         Nivel level = Nivel.NONE;
         boolean error, avail = false;
@@ -194,10 +194,9 @@ public class Main {
         System.out.println("El enunciado ha sido añadido correctamente.");
     }
 
-    public static void mostrarDocumEnun(ImplementacionBD im) {
-        HashMap<Integer, Enunciado> enuns = new HashMap<>();
-        HashMap<Integer, ConvocatoriaExamen> convs = new HashMap<>();
-        enuns = im.mostrarEnunciados();
+    public static void mostrarDocumEnun(Controller cont) {
+        HashMap<Integer, Enunciado> enuns = new HashMap<>(cont.getStatements());;
+        HashMap<Integer, ConvocatoriaExamen> convs;
         int idEnun = -1;
         for (Enunciado enun : enuns.values()) {
             System.out.println(enun.toString());
@@ -211,7 +210,7 @@ public class Main {
             }
         } while (!enuns.containsKey(idEnun));
 
-        convs = im.mostrarConvocatorias(idEnun);
+        convs = new HashMap<>(cont.getExams(idEnun));
         if (convs.size() > 0) {
             for (ConvocatoriaExamen conv : convs.values()) {
                 System.out.println(conv.toString());
@@ -221,14 +220,13 @@ public class Main {
         }
     }
 
-    public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(ImplementacionBD im) {
+    public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(Controller cont) {
         int sesionElegida;
         System.out.println("Sobre que sesion quieres buscar el enunciado?");
         sesionElegida = Utilidades.leerInt();
 
-        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+        HashMap<Integer, Enunciado> enunciados = new HashMap<>(cont.getEnunciadosSesion(sesionElegida));
 
-        enunciados = im.getEnunciadosSesion(sesionElegida);
         for (Enunciado enunciado : enunciados.values()) {
             System.out.println(enunciado);
 
@@ -237,12 +235,12 @@ public class Main {
         return enunciados;
     }
 
-    public static void mostrarConvocatorias(ImplementacionBD im) {
+    public static void mostrarConvocatorias(Controller cont) {
         int id = 0;
-        HashMap<Integer, ConvocatoriaExamen> mapaConvocatoria = new HashMap<>();
+        HashMap<Integer, ConvocatoriaExamen> mapaConvocatoria;
         System.out.println("Introduzca el id del Enunciado:");
         id = utilidades.Utilidades.leerInt();
-        mapaConvocatoria = im.mostrarConvocatorias(id);
+        mapaConvocatoria = new HashMap<>(cont.getExams(id));
         if (mapaConvocatoria.isEmpty()) {
             System.out.println("EL enunciado introducido no existe");
         } else {
@@ -252,7 +250,7 @@ public class Main {
         }
     }
 
-    public static void modConvocatotriaExamen(ImplementacionBD im) {
+    public static void modConvocatotriaExamen(Controller cont) {
         boolean comprobar = false;
         int enunciado = 0;
         int convocatoriaExamen = 0;
@@ -262,7 +260,7 @@ public class Main {
         System.out.println("Introduzca el id del enunciado ha asignar: ");
         enunciado = Utilidades.leerInt();
 
-        comprobar = im.modConvocatoriaExamen(enunciado, convocatoriaExamen);
+        comprobar = cont.modConvocatoriaExamen(enunciado, convocatoriaExamen);
 
         if (!comprobar) {
             System.out.println("No existe ninguna Convocatoria con ese id.");
@@ -272,13 +270,12 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        LoginController cont = new LoginController();
         // TODO Auto-generated method stub
+        Controller cont = new Controller();
         int opcion;
 
         do {
             opcion = mostrarMenu();
-            ImplementacionBD im = new ImplementacionBD();
 
             switch (opcion) {
                 case 1:
@@ -290,19 +287,19 @@ public class Main {
                     break;
 
                 case 3:
-                    mostrarEnunciadosSesion(im);
+                    mostrarEnunciadosSesion(cont);
                     break;
 
                 case 4:
-                    mostrarConvocatorias(im);
+                    mostrarConvocatorias(cont);
                     break;
 
                 case 5:
-                    mostrarDocumEnun(im);
+                    mostrarDocumEnun(cont);
                     break;
 
                 case 6:
-                    modConvocatotriaExamen(im);
+                    modConvocatotriaExamen(cont);
                     break;
                 case 7:
                     System.out.println("Adios");

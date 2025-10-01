@@ -3,12 +3,16 @@ package controller;
 import java.util.Map;
 import modelo.*;
 
-public class LoginController {
+public class Controller {
 
     InterfazDAO dao = new ImplementacionBD();
 
-    public Map<Integer, Enunciado> getEnunciados(int sesionElegida) {
+    public Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
         return dao.getEnunciadosSesion(sesionElegida);
+    }
+    
+    public Map<Integer, Enunciado> getStatements() {
+        return dao.getStatements();
     }
 
     public boolean addUd_Didactica(UnidadDidactica uD) {
@@ -31,8 +35,8 @@ public class LoginController {
         return dao.addEnun(enun);
     }
 
-    public Map<Integer, ConvocatoriaExamen> mostrarConvocatorias(int idEnunciado) {
-        return dao.mostrarConvocatorias(idEnunciado);
+    public Map<Integer, ConvocatoriaExamen> getExams(int statementId) {
+        return dao.getExams(statementId);
     }
 
     public boolean modConvocatoriaExamen(int encunciado, int convocatoria) {
