@@ -13,7 +13,6 @@ public class ConvocatoriaExamen {
     
     
     public ConvocatoriaExamen(){
-        this.id=0;
         this.convocatoria="";
         this.descripcion="";
         this.fecha= LocalDate.now();
@@ -28,6 +27,7 @@ public class ConvocatoriaExamen {
         this.curso=curso;
         this.enunciado=enunciado;
     }
+        
 
     public int getId() {
         return id;

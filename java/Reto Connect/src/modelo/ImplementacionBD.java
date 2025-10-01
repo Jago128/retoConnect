@@ -22,7 +22,7 @@ public class ImplementacionBD implements InterfazDAO {
     final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
     final String SQLMOSTRARSESIONES = "SELECT * FROM CONVOCATORIA_EXAMEN C JOIN ENUNCIADO E ON C.ID_ENUNCIADO=E.ID_ENUNCIADO WHERE E.ID_ENUNCIADO = ?";
     final String SQLADDUD_DIDAC = "INSERT INTO UNIDAD_DIDACTICA (ACRONIMO, TITULO, EVALUACION, DESCRIPCION) VALUES (?,?,?,?)";
-    final String SQLADDCONVOCATORIA_EXAM = "INSERT INTO CONVOCATORIA_EXAMEN (CONVOCATORIA, DESCRIPCION, FECHA, CURSO) VALUES (?,?,?,?)";
+    final String SQLADDCONVOCATORIA_EXAM = "INSERT INTO CONVOCATORIA_EXAMEN (CONVOCATORIA, DESCRIPCION, FECHA, CURSO, ID_ENUNCIADO)  VALUES (?,?,?,?,?)";
     final String SQLADDENUN = "INSERT INTO ENUNCIADO (DESCRIPCION, NIVEL, DISPONIBLE, RUTA) VALUES (?,?,?,?)";
     final String SQLSEARCHENUNS = "SELECT * FROM ENUNCIADO";
     final String SQLSEARCHENUNID = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO=?";
@@ -174,6 +174,8 @@ public class ImplementacionBD implements InterfazDAO {
         }
         return register;
     }
+    
+    
 
     @Override
     public boolean addConvExam(ConvocatoriaExamen cE) {
@@ -181,11 +183,12 @@ public class ImplementacionBD implements InterfazDAO {
 
         this.openConnection();
         try {
-            stmt = con.prepareStatement(SQLADDUD_DIDAC);
+            stmt = con.prepareStatement(SQLADDCONVOCATORIA_EXAM);
             stmt.setString(1, cE.getConvocatoria());
             stmt.setString(2, cE.getDescripcion());
             stmt.setDate(3, Date.valueOf(cE.getFecha()));
             stmt.setString(4, cE.getCurso());
+            stmt.setInt(5, cE.getEnunciado());
             if (stmt.executeUpdate() > 0) {
                 register = true;
             }

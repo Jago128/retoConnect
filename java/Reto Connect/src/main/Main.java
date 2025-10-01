@@ -111,11 +111,12 @@ public class Main {
                     }
                 } while (curso.length() > 100);
 
-                cE.setId(id);
                 cE.setConvocatoria(conv);
                 cE.setDescripcion(desc2);
+                cE.setEnunciado(id);
                 cE.setFecha(LocalDate.parse(date));
                 cE.setCurso(curso);
+                cont.addConvExam(cE);
                 break;
         }
     }
