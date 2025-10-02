@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package excepciones;
+package exceptions;
 
 /**
  *
  * @author kevin
  */
-public class DatosRepetidosExcepcion {
+public class NotFoundException extends Exception {
+    private static final long serialVersionUID = 1L;
 
-    public DatosRepetidosExcepcion() {
-        System.out.println("Los datos introducidos ya estan en la base de datos. Prueba con otros datos.");
+    public NotFoundException(String message) {
+        super(message);
     }
 }

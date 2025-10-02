@@ -5,58 +5,52 @@ import modelo.*;
 
 public class Controller {
 
-    InterfazDAO dao = new ImplementacionBD();
-
-    public Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
-        return dao.getEnunciadosSesion(sesionElegida);
+    private ImplementsDB dao = ImplementsDB.getInstance();
+    
+    
+    
+    public Map<Integer, Statement> getStatementsSession(int sessionId) {
+        return dao.getStatementsSession(sessionId);
     }
     
-    public Map<Integer, Enunciado> getStatements() {
+    public Map<Integer, Statement> getStatements() {
         return dao.getStatements();
     }
 
-    public boolean addUd_Didactica(UnidadDidactica uD) {
-        return dao.addUd_Didactica(uD);
+    public boolean addUnit(Unit unit) {
+        return dao.addUnit(unit);
     }
 
-    public boolean addConvExam(ConvocatoriaExamen cE) {
-        return dao.addConvExam(cE);
+    public boolean addSession(Session cE) {
+        return dao.addSession(cE);
     }
 
-    public Map<Integer, Enunciado> searchEnuns() {
-        return dao.searchEnuns();
+    public boolean addStatement(Statement statement) {
+        return dao.addStatement(statement);
     }
 
-    public boolean searchEnunID(int id) {
-        return dao.searchEnunID(id);
+    public Map<Integer, Session> getSessionsStatement(int statementId) {
+        return dao.getSessionsStatement(statementId);
     }
 
-    public boolean addEnun(Enunciado enun) {
-        return dao.addEnun(enun);
-    }
-
-    public Map<Integer, ConvocatoriaExamen> getExams(int statementId) {
-        return dao.getExams(statementId);
-    }
-
-    public Map<Integer, ConvocatoriaExamen> mostrarTodasConvocatorias() {
-        return dao.mostrarTodasConvocatorias();
+    public Map<Integer, Session> getSessions() {
+        return dao.getSessions();
     }
     
-    public Map<Integer, UnidadDidactica> mostrarTodasUnidades(){
-         return dao.mostrarTodasUnidades();
+    public Map<Integer, Unit> getUnits(){
+         return dao.getUnits();
     }
     
-    public int obtenerUltimoIdEnunciado(){
-        return dao.obtenerUltimoIdEnunciado();
+    public int getLastStatementId(){
+        return dao.getLastStatementId();
     }
     
-    public boolean insert_asigment(int idUnidad, int idEnunciado){
-         return dao.insert_asigment(idUnidad, idEnunciado);
+    public boolean addStatement(int idUnidad, int idEnunciado){
+         return dao.addStatement(idUnidad, idEnunciado);
     }
 
-    public boolean modConvocatoriaExamen(int encunciado, int convocatoria) {
-        return dao.modConvocatoriaExamen(encunciado, convocatoria);
+    public boolean modifySession(int encunciado, int convocatoria) {
+        return dao.modifySession(encunciado, convocatoria);
 
     }
 }

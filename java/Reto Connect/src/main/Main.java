@@ -7,6 +7,7 @@ import java.util.*;
 
 import modelo.*;
 import controller.Controller;
+import exceptions.NotFoundException;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -14,113 +15,119 @@ import utilidades.Utilidades;
 
 public class Main {
 
-    public static int mostrarMenu() {
+    public static int showMenu() {
 
-        return Utilidades.leerInt("1. Introducir Unidad Didactica y Convocatoria examen \n"
-                + "2. Crear Enunciado  añadiendo unidades didacticas\n3. Mostrar Enunciado de una unidad expecifica \n"
-                + "4. Consultar en que sesion se ha utilizado un enunciado \n5. Ver documento asociado ha un enunciado \n6. Asignar un enunciado ha una sesion \n7. Salir\n"
-                + "Introduce una opcion: ", 1, 7);
+        return Utilidades.leerInt("1. Add a unit or session \n"
+                + "2. Create statement and link to unit \n3. Show statements from a certain unit \n"
+                + "4. Show sessions from a certain statement \n5. Open document related to a certain statement \n6. Assign a statement to a session \n7. Leave\n"
+                + "Choose an option: ", 1, 7);
     }
 
-    public static void addUd_ConvExam(Controller cont) {
-        System.out.println("1. Unidad Didactica.\n2. Convocatoria Examen");
+    public static void addUnit_Session(Controller cont) {
+        System.out.println("1. Unit\n2. Session");
         int menu = Utilidades.leerInt(1, 2);
         switch (menu) {
             case 1:
-                UnidadDidactica uD = new UnidadDidactica();
+                Unit unit = new Unit();
                 String acr,
                  title,
                  eval,
                  desc;
-                System.out.println("Introduce el acronimo (40 caracteres max):");
+                System.out.println("Acronym (40 characters max):");
                 do {
                     acr = Utilidades.introducirCadena();
                     if (acr.length() > 40) {
-                        System.out.println("El acronimo no puede ser mas largo que 40 caracteres.");
+                        System.out.println("The acronym can't be longer than 40 characters.");
                     }
                 } while (acr.length() > 40);
 
-                System.out.println("Introduce el titulo (40 caracteres max):");
+                System.out.println("Title (40 characters max):");
                 do {
                     title = Utilidades.introducirCadena();
                     if (title.length() > 40) {
-                        System.out.println("El titulo no puede ser mas largo que 40 caracteres.");
+                        System.out.println("The title can't be longer than 40 characters.");
                     }
                 } while (title.length() > 40);
 
-                System.out.println("Introduce la evaluacion (40 caracteres max):");
+                System.out.println("Evaluation number/name (40 characters max):");
                 do {
                     eval = Utilidades.introducirCadena();
                     if (eval.length() > 40) {
-                        System.out.println("La evaluacion no puede ser mas largo que 40 caracteres.");
+                        System.out.println("The evaluation field can't be longer than 40 characters.");
                     }
                 } while (eval.length() > 40);
 
-                System.out.println("Introduce la descripcion:");
+                System.out.println("Description:");
                 desc = Utilidades.introducirCadena();
 
-                uD.setAcronimo(acr);
-                uD.setTitulo(title);
-                uD.setEvaluacion(eval);
-                uD.setDescripcion(desc);
-                cont.addUd_Didactica(uD);
-                System.out.println("La unidad didactica ha sido añadida correctamente.");
+                unit.setAcronym(acr);
+                unit.setTitle(title);
+                unit.setEvaluation(eval);
+                unit.setDescription(desc);
+                cont.addUnit(unit);
+                System.out.println("The unit has been added correctly.");
                 break;
 
             case 2:
-                String conv,
+                String session,
                  desc2,
                  date,
-                 curso;
-                int id = 0;
+                 course;
+                int idStatement = -1;
                 boolean error,
-                 found;
-                ConvocatoriaExamen cE = new ConvocatoriaExamen();
-                Map<Integer, Enunciado> enuns = cont.searchEnuns();
-                for (Enunciado en : enuns.values()) {
-                    System.out.println(en.toString());
-                }
-                System.out.println("Introduce el id de un enunciado:");
-                do {
-                    id = Utilidades.leerInt();
-                    found = cont.searchEnunID(id);
-                    if (!found) {
-                        System.out.println("El enunciado no se ha podido encontrar.");
-                    }
-                } while (!found);
+                 valid = false;
+                Session cE = new Session();
+                HashMap<Integer, Statement> statements = new HashMap<>(cont.getStatements());
 
-                System.out.println("Introduce la convocatoria (40 caracteres max):");
                 do {
-                    conv = Utilidades.introducirCadena();
-                    if (conv.length() > 40) {
-                        System.out.println("La convocatoria no puede ser mas largo que 40 caracteres.");
-                    }
-                } while (conv.length() > 40);
+                    try {
+                        showStatements(statements);
 
-                System.out.println("Introduce la descripcion:");
+                        System.out.println("Choose a statement ID: ");
+                        idStatement = Utilidades.leerInt();
+
+                        if (!statements.containsKey(idStatement)) {
+                            throw new NotFoundException("Statement not found.");
+                        }
+
+                        valid = true;
+                    } catch (NotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
+                } while (!valid);
+
+                System.out.println("Session (40 caracteres max):");
+                do {
+                    session = Utilidades.introducirCadena();
+                    if (session.length() > 40) {
+                        System.out.println("Session can not be longer than 40 characters.");
+                    }
+                } while (session.length() > 40);
+
+                System.out.println("Description:");
                 desc2 = Utilidades.introducirCadena();
 
                 do {
-                    System.out.println("Introduce una fecha (Formato de fechas: AAAA-MM-DD):");
+                    System.out.println("Date (Date format: AAAA-MM-DD):");
                     date = Utilidades.introducirCadena();
                     error = dateFormatErrorCheck(date);
                 } while (error);
 
-                System.out.println("Introduce el curso (100 caracteres max):");
+                System.out.println("Course (100 caracteres max):");
                 do {
-                    curso = Utilidades.introducirCadena();
-                    if (curso.length() > 100) {
-                        System.out.println("El curso no puede ser mas largo que 100 caracteres.");
+                    course = Utilidades.introducirCadena();
+                    if (course.length() > 100) {
+                        System.out.println("Course can not be longer than 100 characters.");
                     }
-                } while (curso.length() > 100);
+                } while (course.length() > 100);
 
-                cE.setConvocatoria(conv);
-                cE.setDescripcion(desc2);
-                cE.setEnunciado(id);
-                cE.setFecha(LocalDate.parse(date));
-                cE.setCurso(curso);
-                cont.addConvExam(cE);
-                System.out.println("La convocatoria didactica ha sido añadida correctamente.");
+                cE.setSession(session);
+                cE.setDescription(desc2);
+                cE.setStatement(idStatement);
+                cE.setDate(LocalDate.parse(date));
+                cE.setCourse(course);
+                cont.addSession(cE);
+                System.out.println("The session has been added correctly.");
                 break;
         }
     }
@@ -139,52 +146,73 @@ public class Main {
         return false;
     }
 
-    public static void addEnum(Controller cont) {
+    public static void addStatement(Controller cont) {
         String desc, levelCheck, availCheck, route;
-        int idConv, idUnidad, idEnunciado;
-        Nivel level = Nivel.NONE;
-        boolean error, avail = false;
-        Enunciado enun = new Enunciado();
-        Map<Integer, ConvocatoriaExamen> convocatorias = new HashMap<>();
-        Map<Integer, UnidadDidactica> unidades = new HashMap<>();
+        int idSes=0, idUnit=0, idStat;
+        Difficulty level = Difficulty.NONE;
+        boolean error, avail = false, valid = false;
+        Statement enun = new Statement();
+        HashMap<Integer, Session> sessions = new HashMap<>(cont.getSessions());
+        HashMap<Integer, Unit> units = new HashMap<>(cont.getUnits());
 
-        convocatorias = cont.mostrarTodasConvocatorias();
-        for (ConvocatoriaExamen c : convocatorias.values()) {
-            System.out.println(c);
-        }
-        System.out.println("ID de la convocatoria en la que quieres hacer el nuevo enunciado:");
-        idConv = Utilidades.leerInt();
+        do {
+            try {
+                showSessions(sessions);
 
-        unidades = cont.mostrarTodasUnidades();
-        for (UnidadDidactica u : unidades.values()) {
-            System.out.println(u);
-        }
+                System.out.println("Which session will this statement belong to?");
+                idSes = Utilidades.leerInt();
 
-        System.out.println("ID de la unidad con la que va estar relacionado el nuevo enunciado:");
-        idUnidad = Utilidades.leerInt();
+                if (!sessions.containsKey(idSes)) {
+                    throw new NotFoundException("Session not found.");
+                }
 
-        System.out.println("Introduce la descripcion:");
+                valid = true;
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!valid);
+        
+        valid = false;
+        
+        do {
+            try {
+                showUnits(units);
+
+                System.out.println("Which unit will this statement belong to?");
+                idUnit = Utilidades.leerInt();
+
+                if (!units.containsKey(idUnit)) {
+                    throw new NotFoundException("Unit not found.");
+                }
+
+                valid = true;
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!valid);
+
+        System.out.println("Description:");
         desc = Utilidades.introducirCadena();
         do {
             error = false;
             try {
-                System.out.println("Introduce el nivel (Alta, Media, Baja):");
+                System.out.println("Difficulty (High, Medium, Low):");
                 levelCheck = Utilidades.introducirCadena();
                 switch (levelCheck) {
-                    case "Alta":
-                        level = Nivel.ALTA;
+                    case "High":
+                        level = Difficulty.HIGH;
                         break;
 
-                    case "Media":
-                        level = Nivel.MEDIA;
+                    case "Medium":
+                        level = Difficulty.MEDIUM;
                         break;
 
-                    case "Baja":
-                        level = Nivel.BAJA;
+                    case "Low":
+                        level = Difficulty.LOW;
                         break;
 
                     default:
-                        throw new IllegalArgumentException("El valor introducido es invalido.");
+                        throw new IllegalArgumentException("Invalid difficulty.");
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
@@ -192,52 +220,60 @@ public class Main {
             }
         } while (error);
 
-        System.out.println("Esta disponible el enunciado? (Si/No)");
-        availCheck = Utilidades.introducirCadena("Si", "No");
-        if (availCheck.equalsIgnoreCase("Si")) {
+        System.out.println("Is this statement available? (y/n)");
+        availCheck = Utilidades.introducirCadena("y", "n");
+        if (availCheck.equalsIgnoreCase("y")) {
             avail = true;
-        } else if (availCheck.equalsIgnoreCase("No")) {
+        } else if (availCheck.equalsIgnoreCase("n")) {
             avail = false;
         }
 
-        System.out.println("Introduce la ruta del archivo relacionado (100 caracteres max):");
+        System.out.println("Document route (ig. ./assets/example.jpg):");
         do {
             route = Utilidades.introducirCadena();
             if (route.length() > 100) {
-                System.out.println("La ruta no puede ser mas largo que 100 caracteres.");
+                System.out.println("The route can not be longer than 100 characters.");
             }
         } while (route.length() > 100);
 
-        enun.setDescripcion(desc);
-        enun.setDificultad(level);
-        enun.setDisponible(avail);
-        enun.setRuta(route);
-        cont.addEnun(enun);
-        idEnunciado = cont.obtenerUltimoIdEnunciado();
-        cont.modConvocatoriaExamen(idEnunciado, idConv);
-        cont.insert_asigment(idUnidad, idEnunciado);
+        enun.setDescription(desc);
+        enun.setDifficulty(level);
+        enun.setAvailable(avail);
+        enun.setRoute(route);
+        cont.addStatement(enun);
+        idStat = cont.getLastStatementId();
+        cont.modifySession(idStat, idSes);
+        cont.addStatement(idUnit, idStat);
 
-        System.out.println("El enunciado ha sido añadido correctamente y vinculado con la convocatoria elegida.");
+        System.out.println("The statement has been added and linked correctly.");
     }
 
-    public static void mostrarDocumEnun(Controller cont) {
-        HashMap<Integer, Enunciado> enuns = new HashMap<>(cont.getStatements());
-        HashMap<Integer, ConvocatoriaExamen> convs;
-        Enunciado chosenStatement;
+    public static void showStatementDoc(Controller cont) {
+        HashMap<Integer, Statement> statements = new HashMap<>(cont.getStatements());
+        Statement chosenStatement;
         int idStatement = -1;
+        boolean valid = false;
 
-        showStatements(enuns);
         do {
-            System.out.println("ID del enunciado que quieres: ");
-            idStatement = Utilidades.leerInt();
-            if (!enuns.containsKey(idStatement)) {
-                System.out.println("Id invalido.");
+            try {
+                showStatements(statements);
+
+                System.out.println("Choose a statement ID: ");
+                idStatement = Utilidades.leerInt();
+
+                if (!statements.containsKey(idStatement)) {
+                    throw new NotFoundException("Statement not found.");
+                }
+
+                valid = true;
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
             }
-        } while (!enuns.containsKey(idStatement));
+        } while (!valid);
 
-        chosenStatement = enuns.get(idStatement);
+        chosenStatement = statements.get(idStatement);
 
-        File document = new File(chosenStatement.getRuta());
+        File document = new File(chosenStatement.getRoute());
 
         if (Desktop.isDesktopSupported()) {
             try {
@@ -248,88 +284,130 @@ public class Main {
         }
     }
 
-    public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(Controller cont) {
-        int sesionElegida;
+    public static void showStatementsUnit(Controller cont) {
+        int chosenUnit;
+        boolean valid = false;
 
-        Map<Integer, UnidadDidactica> unidades = new HashMap<>();
-        unidades = cont.mostrarTodasUnidades();
+        HashMap<Integer, Unit> units;
+        units = new HashMap<>(cont.getUnits());
 
-        for (UnidadDidactica u : unidades.values()) {
-            System.out.println(u);
-        }
+        do {
+            try {
+                showUnits(units);
 
-        System.out.println("Sobre que unidad quieres buscar el enunciado?");
-        sesionElegida = Utilidades.leerInt();
+                System.out.println("Which unit do you want to get statements from?");
+                chosenUnit = Utilidades.leerInt();
 
-        HashMap<Integer, Enunciado> enunciados = new HashMap<>(cont.getEnunciadosSesion(sesionElegida));
+                if (!units.containsKey(chosenUnit)) {
+                    throw new NotFoundException("Session not found.");
+                }
 
-        for (Enunciado enunciado : enunciados.values()) {
-            System.out.println(enunciado);
+                HashMap<Integer, Statement> enunciados = new HashMap<>(cont.getStatementsSession(chosenUnit));
 
-        }
+                for (Statement enunciado : enunciados.values()) {
+                    System.out.println(enunciado);
+                }
 
-        return enunciados;
-    }
-
-    public static void mostrarConvocatorias(Controller cont) {
-        int id = 0;
-        HashMap<Integer, ConvocatoriaExamen> mapaConvocatoria;
-        HashMap<Integer, Enunciado> enuns = new HashMap<>(cont.getStatements());
-
-        showStatements(enuns);
-        System.out.println("Introduzca el id del Enunciado:");
-        id = utilidades.Utilidades.leerInt();
-
-        mapaConvocatoria = new HashMap<>(cont.getExams(id));
-        if (mapaConvocatoria.isEmpty()) {
-            System.out.println("EL enunciado introducido no existe");
-        } else {
-            for (ConvocatoriaExamen convocatoria : mapaConvocatoria.values()) {
-                System.out.println(convocatoria);
+                valid = true;
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
             }
-        }
+        } while (!valid);
     }
 
-    public static void modConvocatotriaExamen(Controller cont) {
-        boolean comprobar = false;
-        int enunciado = 0;
-        int convocatoriaExamen = 0;
-        Map<Integer, ConvocatoriaExamen> convocatorias = new HashMap<>();
-        Map<Integer, Enunciado> enuns = new HashMap<>();
+    public static void showStatementSessions(Controller cont) {
+        int idStatement = -1;
+        boolean valid = false;
+        HashMap<Integer, Session> sessions;
+        HashMap<Integer, Statement> statements = new HashMap<>(cont.getStatements());
 
-        convocatorias = cont.mostrarTodasConvocatorias();
-        for (ConvocatoriaExamen c : convocatorias.values()) {
-            System.out.println(c);
-        }
+        do {
+            try {
+                showStatements(statements);
 
-        System.out.println("Introduzca el id de la convocatiria ha editar: ");
-        convocatoriaExamen = Utilidades.leerInt();
+                System.out.println("Choose a statement ID: ");
+                idStatement = Utilidades.leerInt();
 
-        enuns = cont.searchEnuns();
-        for (Enunciado en : enuns.values()) {
-            System.out.println(en);
-        }
+                if (!statements.containsKey(idStatement)) {
+                    throw new NotFoundException("Statement not found.");
+                }
 
-        System.out.println("Introduzca el id del enunciado ha asignar: ");
-        enunciado = Utilidades.leerInt();
+                valid = true;
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!valid);
 
-        comprobar = cont.modConvocatoriaExamen(enunciado, convocatoriaExamen);
+        sessions = new HashMap<>(cont.getSessionsStatement(idStatement));
+        showSessions(sessions);
+    }
 
-        if (!comprobar) {
-            System.out.println("No existe ninguna Convocatoria con ese id.");
+    public static void modifySession(Controller cont) {
+        boolean valid = false;
+        int idSes = 0;
+        int idStat = 0;
+        HashMap<Integer, Session> sessions = new HashMap<>(cont.getSessions());
+        HashMap<Integer, Statement> statements = new HashMap<>(cont.getStatements());
+        
+        do {
+            try {
+                showSessions(sessions);
+
+                System.out.println("Choose a session ID: ");
+                idSes = Utilidades.leerInt();
+
+                if (!sessions.containsKey(idSes)) {
+                    throw new NotFoundException("Session not found.");
+                }
+
+                valid = true;
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!valid);
+        
+        valid = false;
+        
+        do {
+            try {
+                showStatements(statements);
+
+                System.out.println("Choose a statement ID: ");
+                idStat = Utilidades.leerInt();
+
+                if (!statements.containsKey(idStat)) {
+                    throw new NotFoundException("Session not found.");
+                }
+
+                valid = true;
+            } catch (NotFoundException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!valid);
+
+        valid = cont.modifySession(idStat, idSes);
+
+        if (!valid) {
+            System.out.println("Error during modification.");
         } else {
-            System.out.println("Se ha modificado correctamente.");
+            System.out.println("Modification done correctly.");
         }
     }
 
-    public static void showStatements(HashMap<Integer, Enunciado> statements) {
-        for (Enunciado statement : statements.values()) {
+    public static void showStatements(HashMap<Integer, Statement> statements) {
+        for (Statement statement : statements.values()) {
             System.out.println(statement.toString());
         }
     }
 
-    public static void showSessions(HashMap<Integer, UnidadDidactica> sessions) {
-        for (UnidadDidactica session : sessions.values()) {
+    public static void showUnits(HashMap<Integer, Unit> units) {
+        for (Unit unit : units.values()) {
+            System.out.println(unit.toString());
+        }
+    }
+
+    public static void showSessions(HashMap<Integer, Session> sessions) {
+        for (Session session : sessions.values()) {
             System.out.println(session.toString());
         }
     }
@@ -337,39 +415,39 @@ public class Main {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
         Controller cont = new Controller();
-        int opcion;
+        int option;
 
         do {
-            opcion = mostrarMenu();
+            option= showMenu();
 
-            switch (opcion) {
+            switch (option) {
                 case 1:
-                    addUd_ConvExam(cont);
+                    addUnit_Session(cont);
                     break;
 
                 case 2:
-                    addEnum(cont);
+                    addStatement(cont);
                     break;
 
                 case 3:
-                    mostrarEnunciadosSesion(cont);
+                    showStatementsUnit(cont);
                     break;
 
                 case 4:
-                    mostrarConvocatorias(cont);
+                    showStatementSessions(cont);
                     break;
 
                 case 5:
-                    mostrarDocumEnun(cont);
+                    showStatementDoc(cont);
                     break;
 
                 case 6:
-                    modConvocatotriaExamen(cont);
+                    modifySession(cont);
                     break;
                 case 7:
-                    System.out.println("Adios");
+                    System.out.println("Goodbye!");
                     break;
             }
-        } while (opcion != 7);
+        } while (option != 7);
     }
 }

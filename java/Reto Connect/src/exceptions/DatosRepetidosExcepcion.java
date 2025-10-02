@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package excepciones;
+package exceptions;
 
 /**
  *
  * @author kevin
  */
-public class NoEncontradoExcepcion extends Exception {
+public class DatosRepetidosExcepcion {
 
-    public NoEncontradoExcepcion() {
-        System.out.println("Los datos introducidos no están en la base de datos");
+    public DatosRepetidosExcepcion() {
+        System.out.println("Los datos introducidos ya estan en la base de datos. Prueba con otros datos.");
     }
 }
