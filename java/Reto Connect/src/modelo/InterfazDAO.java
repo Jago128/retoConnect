@@ -1,5 +1,6 @@
 package modelo;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public interface InterfazDAO {
@@ -14,6 +15,14 @@ public interface InterfazDAO {
     public boolean searchEnunID(int id);
     
     public Map<Integer, Enunciado> mostrarEnunciados();
+    
+    public HashMap<Integer, ConvocatoriaExamen> mostrarTodasConvocatorias();
+    
+    public HashMap<Integer, UnidadDidactica> mostrarTodasUnidades();
+    
+    public int obtenerUltimoIdEnunciado();
+    
+    public boolean insert_asigment(int idUnidad, int idEnunciado);
     
     public  Map<Integer, Enunciado> getEnunciadosSesion(int sesionElegida);
     

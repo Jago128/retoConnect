@@ -137,10 +137,29 @@ public class Main {
 
     public static void addEnum(LoginController cont) {
         String desc, levelCheck, availCheck, route;
+        int idConv, idUnidad, idEnunciado;
         Nivel level = Nivel.NONE;
         boolean error, avail = false;
         Enunciado enun = new Enunciado();
-
+        Map<Integer, ConvocatoriaExamen> convocatorias = new HashMap<>();
+        Map<Integer, UnidadDidactica> unidades = new HashMap<>();
+        
+        convocatorias=cont.mostrarTodasConvocatorias();
+        for(ConvocatoriaExamen c:convocatorias.values()){
+            System.out.println(c);
+        }
+        System.out.println("ID de la convocatoria en la que quieres hacer el nuevo enunciado:");
+        idConv = Utilidades.leerInt();
+        
+        unidades=cont.mostrarTodasUnidades();
+        for(UnidadDidactica u:unidades.values()){
+            System.out.println(u);
+        }
+        
+        System.out.println("ID de la unidad con la que va estar relacionado el nuevo enunciado:");
+        idUnidad = Utilidades.leerInt();
+        
+        
         System.out.println("Introduce la descripcion:");
         desc = Utilidades.introducirCadena();
         do {
@@ -191,7 +210,11 @@ public class Main {
         enun.setDisponible(avail);
         enun.setRuta(route);
         cont.addEnun(enun);
-        System.out.println("El enunciado ha sido añadido correctamente.");
+        idEnunciado=cont.obtenerUltimoIdEnunciado();
+        cont.modConvocatoriaExamen(idEnunciado, idConv);
+        cont.insert_asigment(idUnidad, idEnunciado);
+        
+        System.out.println("El enunciado ha sido añadido correctamente y vinculado con la convocatoria elegida.");
     }
 
     public static void mostrarDocumEnun(ImplementacionBD im) {
