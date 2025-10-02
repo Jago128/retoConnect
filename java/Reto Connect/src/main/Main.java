@@ -120,6 +120,7 @@ public class Main {
                 cE.setFecha(LocalDate.parse(date));
                 cE.setCurso(curso);
                 cont.addConvExam(cE);
+                System.out.println("La convocatoria didactica ha sido añadida correctamente.");
                 break;
         }
     }
@@ -146,23 +147,22 @@ public class Main {
         Enunciado enun = new Enunciado();
         Map<Integer, ConvocatoriaExamen> convocatorias = new HashMap<>();
         Map<Integer, UnidadDidactica> unidades = new HashMap<>();
-        
-        convocatorias=cont.mostrarTodasConvocatorias();
-        for(ConvocatoriaExamen c:convocatorias.values()){
+
+        convocatorias = cont.mostrarTodasConvocatorias();
+        for (ConvocatoriaExamen c : convocatorias.values()) {
             System.out.println(c);
         }
         System.out.println("ID de la convocatoria en la que quieres hacer el nuevo enunciado:");
         idConv = Utilidades.leerInt();
-        
-        unidades=cont.mostrarTodasUnidades();
-        for(UnidadDidactica u:unidades.values()){
+
+        unidades = cont.mostrarTodasUnidades();
+        for (UnidadDidactica u : unidades.values()) {
             System.out.println(u);
         }
-        
+
         System.out.println("ID de la unidad con la que va estar relacionado el nuevo enunciado:");
         idUnidad = Utilidades.leerInt();
-        
-        
+
         System.out.println("Introduce la descripcion:");
         desc = Utilidades.introducirCadena();
         do {
@@ -213,10 +213,10 @@ public class Main {
         enun.setDisponible(avail);
         enun.setRuta(route);
         cont.addEnun(enun);
-        idEnunciado=cont.obtenerUltimoIdEnunciado();
+        idEnunciado = cont.obtenerUltimoIdEnunciado();
         cont.modConvocatoriaExamen(idEnunciado, idConv);
         cont.insert_asigment(idUnidad, idEnunciado);
-        
+
         System.out.println("El enunciado ha sido añadido correctamente y vinculado con la convocatoria elegida.");
     }
 
@@ -225,7 +225,7 @@ public class Main {
         HashMap<Integer, ConvocatoriaExamen> convs;
         Enunciado chosenStatement;
         int idStatement = -1;
-        
+
         showStatements(enuns);
         do {
             System.out.println("ID del enunciado que quieres: ");
@@ -250,7 +250,15 @@ public class Main {
 
     public static HashMap<Integer, Enunciado> mostrarEnunciadosSesion(Controller cont) {
         int sesionElegida;
-        System.out.println("Sobre que sesion quieres buscar el enunciado?");
+
+        Map<Integer, UnidadDidactica> unidades = new HashMap<>();
+        unidades = cont.mostrarTodasUnidades();
+
+        for (UnidadDidactica u : unidades.values()) {
+            System.out.println(u);
+        }
+
+        System.out.println("Sobre que unidad quieres buscar el enunciado?");
         sesionElegida = Utilidades.leerInt();
 
         HashMap<Integer, Enunciado> enunciados = new HashMap<>(cont.getEnunciadosSesion(sesionElegida));
@@ -267,11 +275,11 @@ public class Main {
         int id = 0;
         HashMap<Integer, ConvocatoriaExamen> mapaConvocatoria;
         HashMap<Integer, Enunciado> enuns = new HashMap<>(cont.getStatements());
-        
+
         showStatements(enuns);
         System.out.println("Introduzca el id del Enunciado:");
         id = utilidades.Utilidades.leerInt();
-        
+
         mapaConvocatoria = new HashMap<>(cont.getExams(id));
         if (mapaConvocatoria.isEmpty()) {
             System.out.println("EL enunciado introducido no existe");
@@ -286,9 +294,22 @@ public class Main {
         boolean comprobar = false;
         int enunciado = 0;
         int convocatoriaExamen = 0;
+        Map<Integer, ConvocatoriaExamen> convocatorias = new HashMap<>();
+        Map<Integer, Enunciado> enuns = new HashMap<>();
+
+        convocatorias = cont.mostrarTodasConvocatorias();
+        for (ConvocatoriaExamen c : convocatorias.values()) {
+            System.out.println(c);
+        }
 
         System.out.println("Introduzca el id de la convocatiria ha editar: ");
         convocatoriaExamen = Utilidades.leerInt();
+
+        enuns = cont.searchEnuns();
+        for (Enunciado en : enuns.values()) {
+            System.out.println(en);
+        }
+
         System.out.println("Introduzca el id del enunciado ha asignar: ");
         enunciado = Utilidades.leerInt();
 
@@ -300,14 +321,14 @@ public class Main {
             System.out.println("Se ha modificado correctamente.");
         }
     }
-    
-    public static void showStatements(HashMap<Integer, Enunciado> statements){
+
+    public static void showStatements(HashMap<Integer, Enunciado> statements) {
         for (Enunciado statement : statements.values()) {
             System.out.println(statement.toString());
         }
     }
-    
-    public static void showSessions(HashMap<Integer, UnidadDidactica> sessions){
+
+    public static void showSessions(HashMap<Integer, UnidadDidactica> sessions) {
         for (UnidadDidactica session : sessions.values()) {
             System.out.println(session.toString());
         }

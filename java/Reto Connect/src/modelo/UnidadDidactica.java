@@ -66,6 +66,6 @@ public class UnidadDidactica {
 
     @Override
     public String toString() {
-        return "Player [id=" + id + ", acronimo= " + acronimo + ", titulo=" + titulo + ", evaluacion= " + evaluacion + ", descripcion= " + descripcion + "]";
+        return "Unidad Didactica [id=" + id + ", acronimo= " + acronimo + ", titulo=" + titulo + ", evaluacion= " + evaluacion + ", descripcion= " + descripcion + "]";
     }
 }
