@@ -1,5 +1,4 @@
 package modelo;
-
 import java.sql.Date;
 import java.sql.*;
 import java.time.LocalDate;
@@ -18,8 +17,11 @@ public class ImplementacionBD implements InterfazDAO {
     private String passwordBD;
 
     final String SQL_MOSTRAR_ENUNCIADOS = "SELECT * FROM ENUNCIADO";
+    final String SQL_TODAS_CONVOCATORIAS = "SELECT * FROM CONVOCATORIA_EXAMEN";
+    final String SQL_TODAS_UNIDADES = "SELECT * FROM UNIDAD_DIDACTICA";
+    final String SQL_ASIGNAR_ENUN_UNIDAD = "INSERT INTO ASIGNAR (ID_UNIDAD, ID_ENUNCIADO) VALUES (?,?)";
     final String SQL_EXAMEN_ENUNCIADO = "SELECT * FROM CONVOCATORIA_EXAMEN WHERE ID_ENUNCIADO = ?";
-    final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO WHERE ID_ENUNCIADO = (SELECT ID_ENUNCIADO FROM ASIGNAR WHERE ID_UNIDAD =?)";
+    final String SQLENUNCIADO = "SELECT * FROM ENUNCIADO E JOIN ASIGNAR A ON E.ID_ENUNCIADO = A.ID_ENUNCIADO WHERE A.ID_UNIDAD = ?;";
     final String SQLMOSTRARSESIONES = "SELECT * FROM CONVOCATORIA_EXAMEN C JOIN ENUNCIADO E ON C.ID_ENUNCIADO=E.ID_ENUNCIADO WHERE E.ID_ENUNCIADO = ?";
     final String SQLADDUD_DIDAC = "INSERT INTO UNIDAD_DIDACTICA (ACRONIMO, TITULO, EVALUACION, DESCRIPCION) VALUES (?,?,?,?)";
     final String SQLADDCONVOCATORIA_EXAM = "INSERT INTO CONVOCATORIA_EXAMEN (CONVOCATORIA, DESCRIPCION, FECHA, CURSO, ID_ENUNCIADO)  VALUES (?,?,?,?,?)";
@@ -81,43 +83,155 @@ public class ImplementacionBD implements InterfazDAO {
         return enunciados;
     }
 
-    public HashMap<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
-        ResultSet rs = null;
-        Enunciado enunciado;
-        HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+    public HashMap<Integer, ConvocatoriaExamen> mostrarTodasConvocatorias() {
+        ResultSet rs;
+        HashMap<Integer, ConvocatoriaExamen> convocatorias = new HashMap<>();
 
-        this.openConnection();
+        openConnection();
 
         try {
-
-            stmt = con.prepareStatement(SQLENUNCIADO);
-            stmt.setInt(1, sesionElegida);
+            stmt = con.prepareStatement(SQL_TODAS_CONVOCATORIAS);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                enunciado = new Enunciado();
-                enunciado.setId(rs.getInt("id_enunciado"));
-                enunciado.setDescripcion(rs.getString("descripcion"));
-                String dificultadStr = rs.getString("nivel");
-                if (dificultadStr != null) {
-                    Nivel dificultad = Nivel.valueOf(dificultadStr.toUpperCase());
-                    enunciado.setDificultad(dificultad);
+                ConvocatoriaExamen conv = new ConvocatoriaExamen();
+                conv.setId(rs.getInt("ID_CONVOCATORIA_EXAMEN"));
+                conv.setConvocatoria(rs.getString("CONVOCATORIA"));
+                conv.setDescripcion(rs.getString("DESCRIPCION"));
+                java.sql.Date fechaSQL = rs.getDate("FECHA");
+                if (fechaSQL != null) {
+                    conv.setFecha(fechaSQL.toLocalDate());
                 }
-                enunciado.setDisponible(rs.getBoolean("disponible"));
-                enunciado.setRuta(rs.getString("ruta"));
+                conv.setCurso(rs.getString("CURSO"));
+                conv.setEnunciado(rs.getInt("ID_ENUNCIADO"));
 
-                enunciados.put(enunciado.getId(), enunciado);
+                convocatorias.put(conv.getId(), conv);
             }
 
             rs.close();
             stmt.close();
             con.close();
-
         } catch (SQLException e) {
             e.printStackTrace();
-
         }
-        return enunciados;
+
+        return convocatorias;
+    }
+    
+    public HashMap<Integer, UnidadDidactica> mostrarTodasUnidades() {
+        ResultSet rs;
+        HashMap<Integer, UnidadDidactica> unidades = new HashMap<>();
+
+        openConnection();
+
+        try {
+            stmt = con.prepareStatement(SQL_TODAS_UNIDADES);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                UnidadDidactica unidad = new UnidadDidactica();
+                unidad.setId(rs.getInt("ID_UNIDAD"));
+                unidad.setAcronimo(rs.getString("ACRONIMO"));
+                unidad.setTitulo(rs.getString("TITULO"));
+                unidad.setEvaluacion(rs.getString("EVALUACION"));
+                unidad.setDescripcion(rs.getString("DESCRIPCION"));
+
+                unidades.put(unidad.getId(), unidad);
+            }
+
+            rs.close();
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return unidades;
+    }
+    
+    @Override
+    public boolean insert_asigment(int idUnidad, int idEnunciado) {
+        boolean register = false;
+
+        this.openConnection();
+        try {
+            stmt = con.prepareStatement(SQL_ASIGNAR_ENUN_UNIDAD);
+            stmt.setInt(1, idUnidad);
+            stmt.setInt(2, idEnunciado);
+            if (stmt.executeUpdate() > 0) {
+                register = true;
+            }
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return register;
+    }
+    
+
+    @Override
+    public int obtenerUltimoIdEnunciado() {
+        this.openConnection();
+        int ultimoId = 0;
+
+        try {
+            // Consulta específica para el último ID
+            String sql = "SELECT MAX(ID_ENUNCIADO) as ultimo_id FROM ENUNCIADO";
+            stmt = con.prepareStatement(sql);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                ultimoId = rs.getInt("ultimo_id");
+            }
+
+            stmt.close();
+            con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ultimoId;
+    }
+
+    public HashMap<Integer, Enunciado> getEnunciadosSesion(int sesionElegida) {
+        ResultSet rs = null;
+		Enunciado enunciado;
+		HashMap<Integer, Enunciado> enunciados = new HashMap<>();
+
+		this.openConnection();
+
+		try {
+                        
+			stmt = con.prepareStatement(SQLENUNCIADO);
+                        stmt.setInt(1, sesionElegida);
+			rs = stmt.executeQuery();
+
+			while (rs.next()) {
+				enunciado = new Enunciado();
+                                enunciado.setId(rs.getInt("id_enunciado"));
+				enunciado.setDescripcion(rs.getString("descripcion"));
+				String dificultadStr = rs.getString("nivel");
+                                if (dificultadStr != null) 
+                                {
+                                    Nivel dificultad = Nivel.valueOf(dificultadStr.toUpperCase());
+                                    enunciado.setDificultad(dificultad);
+                                }
+				enunciado.setDisponible(rs.getBoolean("disponible"));
+				enunciado.setRuta(rs.getString("ruta"));
+                                
+				enunciados.put(enunciado.getId(), enunciado);
+			}
+
+			rs.close();
+			stmt.close();
+			con.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+
+		}
+		return enunciados;
     }
 
     @Override
@@ -151,7 +265,7 @@ public class ImplementacionBD implements InterfazDAO {
         }
         return est;
     }
-
+        
     @Override
     public boolean addUd_Didactica(UnidadDidactica uD) {
         boolean register = false;
@@ -173,8 +287,6 @@ public class ImplementacionBD implements InterfazDAO {
         }
         return register;
     }
-    
-    
 
     @Override
     public boolean addConvExam(ConvocatoriaExamen cE) {
@@ -206,10 +318,13 @@ public class ImplementacionBD implements InterfazDAO {
         try {
             stmt = con.prepareStatement(SQLSEARCHENUNS);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
+
+            // CAMBIO: while en lugar de if para procesar TODOS los registros
+            while (rs.next()) {
                 enuns.put(rs.getInt("ID_ENUNCIADO"), new Enunciado(rs.getInt("ID_ENUNCIADO"), rs.getString("DESCRIPCION"),
                         Nivel.valueOf(rs.getString("NIVEL").toUpperCase()), rs.getBoolean("DISPONIBLE"), rs.getString("RUTA")));
             }
+
             stmt.close();
             con.close();
         } catch (SQLException e) {
@@ -259,32 +374,32 @@ public class ImplementacionBD implements InterfazDAO {
         }
         return register;
     }
-
+    
     //Insertar un enunciado
-    public boolean crearEnunciado(Enunciado enunciado) {
+	public boolean crearEnunciado(Enunciado enunciado) {
 
-        boolean ok = false;
-        this.openConnection();
-        try {
-            // Preparamos la sentencia stmt con la conexion y sentencia sql correspondiente
-            stmt = con.prepareStatement(SQLCREARENUNCIADO);
-            stmt.setString(1, enunciado.getDescripcion());
-            stmt.setString(2, enunciado.getDificultad().toString()); //castear a string para introducirlo en la base de datos
-            stmt.setBoolean(3, enunciado.isDisponible());
-            stmt.setString(4, enunciado.getRuta());
+		boolean ok = false;
+		this.openConnection();
+		try {
+			// Preparamos la sentencia stmt con la conexion y sentencia sql correspondiente
+			stmt = con.prepareStatement(SQLCREARENUNCIADO);
+			stmt.setString(1, enunciado.getDescripcion());
+			stmt.setString(2, enunciado.getDificultad().toString()); //castear a string para introducirlo en la base de datos
+			stmt.setBoolean(3, enunciado.isDisponible());
+			stmt.setString(4, enunciado.getRuta());
 
-            if (stmt.executeUpdate() > 0) {
-                ok = true;
-            }
+			if (stmt.executeUpdate() > 0) {
+				ok = true;
+			}
 
-            stmt.close();
-            con.close();
-        } catch (SQLException e) {
-            System.out.println("Error al verificar credenciales: " + e.getMessage());
-        }
-        return ok;
+			stmt.close();
+			con.close();
+		} catch (SQLException e) {
+			System.out.println("Error al verificar credenciales: " + e.getMessage());
+		}
+		return ok;
 
-    }
+	}
 
     public boolean modConvocatoriaExamen(int Encunciado, int Convocatoria) {
         boolean modificado = false;

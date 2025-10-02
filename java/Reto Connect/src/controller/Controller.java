@@ -39,6 +39,22 @@ public class Controller {
         return dao.getExams(statementId);
     }
 
+    public Map<Integer, ConvocatoriaExamen> mostrarTodasConvocatorias() {
+        return dao.mostrarTodasConvocatorias();
+    }
+    
+    public Map<Integer, UnidadDidactica> mostrarTodasUnidades(){
+         return dao.mostrarTodasUnidades();
+    }
+    
+    public int obtenerUltimoIdEnunciado(){
+        return dao.obtenerUltimoIdEnunciado();
+    }
+    
+    public boolean insert_asigment(int idUnidad, int idEnunciado){
+         return dao.insert_asigment(idUnidad, idEnunciado);
+    }
+
     public boolean modConvocatoriaExamen(int encunciado, int convocatoria) {
         return dao.modConvocatoriaExamen(encunciado, convocatoria);
 
